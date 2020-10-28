@@ -1,0 +1,25 @@
+{
+  "name": "whitehat-kanban",
+  "version": "1.0.0",
+  "description": "Our new and amazing Kanban Board ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dawidchar/Whitehat-Kanban.git"
+  },
+  "keywords": [
+    "kanban",
+    "pumpkin",
+    "whitehat",
+    "board"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dawidchar/Whitehat-Kanban/issues"
+  },
+  "homepage": "https://github.com/dawidchar/Whitehat-Kanban#readme"
+}
