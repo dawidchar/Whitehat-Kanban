@@ -15,12 +15,11 @@ cloud {
     object UserAccess {
         user key
         board key
-        accessLevel Integer
     }
 }
 object Task {
     name String
-    users Array<User>
+    user User
     state Integer
 }
 

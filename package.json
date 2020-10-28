@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/dawidchar/Whitehat-Kanban/issues"
   },
-  "homepage": "https://github.com/dawidchar/Whitehat-Kanban#readme"
+  "homepage": "https://github.com/dawidchar/Whitehat-Kanban#readme",
+  "dependencies": {
+    "@handlebars/allow-prototype-access": "^1.0.3",
+    "express-handlebars": "^5.2.0",
+    "handlebars": "^4.7.6"
+  }
 }
