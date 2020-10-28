@@ -1,0 +1,24 @@
+@startuml
+class User {
+    id Integer 
+    name String
+    avatar String 
+    -- 
+    addTask(<Task>)
+    deleteTask(<Task>)
+    createBoard(<Board>)
+    deleteBoard(<Board>)
+}
+class Task {
+    name String 
+    users Array<User> 
+    state Integer  
+}
+class Board {
+    title String
+    collaborators Array<User>
+    tasks Array<Task>
+}
+User --{ Board
+Board --{ Task 
+@enduml
