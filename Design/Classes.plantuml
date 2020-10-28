@@ -1,25 +1,40 @@
 @startuml
+top to bottom direction
+left to right direction
+class Board {
+    title String
+    collaborators Array<User>
+    tasks Array<Task>
+    --
+    addColaborator(<User>)
+    removeColaborator(<User>)
+}
 class User {
-    id Integer 
+    id Integer
     name String
-    avatar String 
-    -- 
+    avatar String
+    --
     addTask(<Task>)
     deleteTask(<Task>)
     createBoard(<Board>)
     deleteBoard(<Board>)
 }
-class Task {
-    name String 
-    users Array<User> 
-    state Integer  
+cloud {
+    object UserAccess {
+        user key
+        board key
+        accessLevel Integer
+    }
 }
-class Board {
-    title String
-    collaborators Array<User>
-    tasks Array<Task>
+class Task {
+    name String
+    users Array<User>
+    state Integer
 }
 
-Board --{ User
-Board --{ Task 
+Board --{ UserAccess
+User --{ UserAccess
+Board --{ Task
+
+
 @enduml
