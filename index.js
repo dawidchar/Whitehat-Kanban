@@ -76,6 +76,10 @@ app.post('/api/board/:id', (request, response) => { //Update Board with that ID
 
 })
 
+app.post('/api/board/:id/name', (request, response) => { //Update Name of Board with that ID
+
+})
+
 app.post('/api/board/:id/delete', (request, response) => { //Delete Board With that ID
 
 })
@@ -97,6 +101,14 @@ app.get('/api/task/:taksid', (request, response) => { // Get A Single Task
 })
 
 app.post('/api/task/:taksid', (request, response) => {// Update a Specific Task with that Task ID
+
+})
+
+app.post('/api/task/:taksid/description', (request, response) => {// Update the Description of Specific Task with that Task ID
+
+})
+
+app.post('/api/task/:taksid/assign', (request, response) => {// Update the assigned User of Specific Task with that Task ID
 
 })
 
