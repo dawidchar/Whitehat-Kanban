@@ -1,24 +1,15 @@
 @startuml
 top to bottom direction
 left to right direction
-class Board {
+object Board {
     title String
     collaborators Array<User>
     tasks Array<Task>
-    --
-    addTask(<Task>)
-    deleteTask(<Task>)
-    ..
-    addColaborator(<User>)
-    removeColaborator(<User>)
 }
-class User {
+object User {
     id Integer
     name String
     avatar String
-    --
-    createBoard(<Board>)
-    deleteBoard(<Board>)
 }
 cloud {
     object UserAccess {
@@ -27,12 +18,10 @@ cloud {
         accessLevel Integer
     }
 }
-class Task {
+object Task {
     name String
     users Array<User>
     state Integer
-    --
-    setState(Integer)
 }
 
 Board --{ UserAccess
