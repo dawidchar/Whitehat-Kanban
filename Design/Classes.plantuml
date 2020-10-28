@@ -6,6 +6,9 @@ class Board {
     collaborators Array<User>
     tasks Array<Task>
     --
+    addTask(<Task>)
+    deleteTask(<Task>)
+    ..
     addColaborator(<User>)
     removeColaborator(<User>)
 }
@@ -14,8 +17,6 @@ class User {
     name String
     avatar String
     --
-    addTask(<Task>)
-    deleteTask(<Task>)
     createBoard(<Board>)
     deleteBoard(<Board>)
 }
@@ -30,6 +31,8 @@ class Task {
     name String
     users Array<User>
     state Integer
+    --
+    setState(Integer)
 }
 
 Board --{ UserAccess
