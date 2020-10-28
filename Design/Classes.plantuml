@@ -19,6 +19,7 @@ class Board {
     collaborators Array<User>
     tasks Array<Task>
 }
-User --{ Board
+
+Board --{ User
 Board --{ Task 
 @enduml
