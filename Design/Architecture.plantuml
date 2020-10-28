@@ -1,0 +1,24 @@
+@startuml
+top to bottom direction
+database Database
+node NodeJS {
+    folder public
+    package Packages {
+        frame Express
+        frame Sequlize
+    }
+    file Server.js
+}
+cloud Internet
+frame User {
+    package Sources{
+        frame App.Run
+    }
+}
+
+Database <..> Sequlize
+Sequlize <--> Express
+Express <-- public
+Express <..> Internet
+Internet <..> User
+@enduml

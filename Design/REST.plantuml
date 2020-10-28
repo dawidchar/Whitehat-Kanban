@@ -1,0 +1,84 @@
+@startuml
+top to bottom direction
+card REST{
+    frame /boards {
+        card C1 as "
+        <b>POST
+        --
+        Create New Board
+        "
+        card C2 as "
+        <b>GET
+        --
+        Gets All Your Current Board
+        "
+    }
+    frame /board/[id] {
+        card C3 as "
+        <b>POST
+        --
+        Update Board
+        "
+        card C4 as "
+        <b>GET
+        --
+        Get That Specified Board
+        "
+    }
+    frame /board/[id]/tasks {
+        card C5 as "
+        <b>POST
+        --
+        Add New Task
+        "
+        card C6 as "
+        <b>GET
+        --
+        Get All Tasks for that board
+        "
+    }
+    frame /board/[id]/task/[id] {
+        card C7 as "
+        <b>POST
+        --
+        Update That Task
+        "
+        card C8 as "
+        <b>GET
+        --
+        Get That task on that board
+        "
+    }
+    frame /users {
+        card C9 as "
+        <b>POST
+        --
+        Create a New User
+        "
+        card C10 as "
+        <b>GET
+        --
+        Get All Users
+        "
+    }
+    frame /user/[id] {
+        card 11 as "
+        <b>POST
+        --
+        Update User Details
+        "
+        card C12 as "
+        <b>GET
+        --
+        Get That User's Details
+        "
+    }
+    frame /user/[id]/boards {
+        card C13 as "
+        <b>GET
+        --
+        Get That User's Boards
+        "
+    }
+}
+@enduml
