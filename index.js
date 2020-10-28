@@ -46,6 +46,10 @@ app.get('/api/users/:userid', (request, response) => { //Get User with ID
 
 })
 
+app.get('/api/users/:userid/boards', (request, response) => { //Get the Boards of the User with ID
+
+})
+
 app.post('/api/users/:userid', (request, response) => { // Update User with that ID
 
 })
