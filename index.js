@@ -129,12 +129,29 @@ app.post('/api/board/:id', async (request, response) => { //Update Board with th
     }
 })
 
-app.post('/api/board/:id/name', (request, response) => { //Update Name of Board with that ID
-
+app.post('/api/board/:id/name', async (request, response) => { //Update Name of Board with that ID
+    if (request.params.id) {
+        let id = request.params.id;
+        let bName = request.body.bName;
+        let board = await Board.update({ title: bName }, {
+            where: {id: id}
+        })
+        response.send(true)
+    } else {
+        response.send(false)
+    }
 })
 
 app.post('/api/board/:id/delete', (request, response) => { //Delete Board With that ID
-
+    if (request.params.id) {
+        let id = request.params.id;
+        await Board.destroy({
+            where: { id: id }
+        });
+        response.send(true);
+    } else {
+        response.send(false);
+    }
 })
 
 //// Tasks
