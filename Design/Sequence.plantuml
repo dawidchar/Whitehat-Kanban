@@ -1,0 +1,12 @@
+@startuml
+== Get Page ==
+Client -> Server : Get Page
+Server --> Client : Serve Handlebars Page
+== Fetch Data To Populate Page==
+ref over Client : AppRun Fetch
+Client -> Server : AJAX Fetch Data (REST API)
+Server -> Database : Grab Requested Data
+Database --> Server : Return Requested Data
+Server --> Client : Return Requested Data 
+ref over Client : AppRun Render
+@enduml
