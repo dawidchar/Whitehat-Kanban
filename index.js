@@ -3,6 +3,7 @@ const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const app = express()
+const { Board, User, Task, sequelize } = require('models')
 
 const handlebars = expressHandlebars({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
@@ -11,21 +12,33 @@ const handlebars = expressHandlebars({
 app.use(express.static('public'))
 app.engine('handlebars', handlebars)
 app.set('view engine', 'handlebars')
+app.use(express.urlencoded({ extended: true}))
+app.use(express.json())
 
 app.get('/', (request, response) => { //Login Page
     response.render('login', {date: new Date()})
 })
 
-app.get('/boards', (request, response) => { //All Boards Page
-    
+app.get('/boards', async (request, response) => { //All Boards Page
+    const boards = await Board.findAll({
+        include: 'users',
+        nest: true 
+    })
+    response.render('boards', {boards})
 })
 
-app.get('/myboards', (request, response) => { //Boards You are part of Page
-    
+app.get('/:userid/myboards', async (request, response) => { //Boards You are part of Page
+    const user = await User.findByPk(request.params.userid)
+    const boards = await user.getBoards()
+    response.render('myboards', {user, boards})
 })
 
-app.get('/board/:id', (request, response) => { // Specific Board Page
-    
+
+app.get('/board/:id', async (request, response) => { // Specific Board Page
+    const board = await Board.findByPk(request.params.id)
+    const tasks = await board.getTasks()
+    const users = await board.getUsers()
+    response.render('board', {board, tasks, users})
 })
 
 
