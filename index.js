@@ -162,8 +162,9 @@ app.post('/api/board/:id/delete', async (request, response) => { //Delete Board 
 app.get('/api/board/:id/tasks', async (request, response) => { // Get Tasks From the Board With that Board ID
     if (request.params.id) {
         let id = request.params.id;
-        let task = await Task.create({ name: 'test' })
-        board.addTask(task)
+        let board = await Board.findOne({
+            where: { id: id }
+        });
         let tasks = await board.getTasks();
         response.send(tasks);
     } else {
@@ -177,8 +178,16 @@ app.post('/api/board/:id/tasks', (request, response) => {// Create a New Task Fo
 
 //(Each task has a unique ID regardless of their board so we can just refrence it)
 
-app.get('/api/task/:taksid', (request, response) => { // Get A Single Task 
-
+app.get('/api/task/:taskid', async (request, response) => { // Get A Single Task 
+    if (request.params.taskid) {
+        let id = request.params.taskid;
+        let task = await Task.findOne({
+            where: { id: id }
+        });
+        response.send(task)
+    } else {
+        response.send(false)
+    }
 })
 
 app.post('/api/task/:taksid', (request, response) => {// Update a Specific Task with that Task ID
