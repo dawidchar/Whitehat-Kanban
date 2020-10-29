@@ -100,8 +100,33 @@ app.get('/api/board/:id', async (request, response) => { //Get Board With ID
     }
 })
 
-app.post('/api/board/:id', (request, response) => { //Update Board with that ID
-
+app.post('/api/board/:id', async (request, response) => { //Update Board with that ID
+    if (request.params.id) {
+        let id = request.params.id;
+        let operation = request.body.operation;
+        let userid = request.body.userid;
+        let board = await Board.findOne({
+            where: {id: id}
+        });
+        let user = await User.findOne({
+            where: {id: userid}
+        });
+        switch (operation) {
+            case 'adduser':
+                board.addUser(user);
+                response.send(true);
+                break;
+            case 'removeuser':
+                board.removeUser(user);
+                response.send(true)
+                break;  
+            default:
+                response.send(false)
+                break;
+        }
+    } else {
+        response.send(false)
+    }
 })
 
 app.post('/api/board/:id/name', (request, response) => { //Update Name of Board with that ID
