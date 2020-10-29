@@ -7,6 +7,7 @@ const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-acce
 
 
 const app = express()
+const { Board, User, Task, sequelize } = require('models')
 
 const handlebars = expressHandlebars({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
@@ -15,6 +16,8 @@ const handlebars = expressHandlebars({
 app.use(express.static('public'))
 app.engine('handlebars', handlebars)
 app.set('view engine', 'handlebars')
+app.use(express.urlencoded({ extended: true}))
+app.use(express.json())
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -25,18 +28,27 @@ app.get('/', (request, response) => { //Login Page
     response.render('login', {date: new Date()})
 })
 
-app.get('/boards', (request, response) => { //All Boards Page
-    
+app.get('/boards', async (request, response) => { //All Boards Page
+    const boards = await Board.findAll({
+        include: 'users',
+        nest: true 
+    })
+    response.render('boards', {boards})
 })
 
-app.get('/myboards', (request, response) => { //Boards You are part of Page
-    
+app.get('/:userid/myboards', async (request, response) => { //Boards You are part of Page
+    const user = await User.findByPk(request.params.userid)
+    const boards = await user.getBoards()
+    response.render('myboards', {user, boards})
 })
 
-app.get('/board/:id', (request, response) => { // Specific Board Page
-    
-})
 
+app.get('/board/:id', async (request, response) => { // Specific Board Page
+    const board = await Board.findByPk(request.params.id)
+    const tasks = await board.getTasks()
+    const users = await board.getUsers()
+    response.render('board', {board, tasks, users})
+})
 
 
 ///////////// REST /////////////
@@ -44,27 +56,36 @@ app.get('/board/:id', (request, response) => { // Specific Board Page
 ////Users
 
 app.get('/api/users', (request, response) => { //Get All Users
-
+    const users = User.all
+    response.send(users)
 })
 
 app.post('/api/users', (request, response) => { // Create New User
-
+    User.all.push(request.body)
+    response.send()
 })
 
-app.get('/api/users/:userid', (request, response) => { //Get User with ID
-
+app.get('/api/users/:userid', async (request, response) => { //Get User with ID
+    const user = await User.findByPk(request.params.userid)
+    response.send(user)
 })
 
-app.get('/api/users/:userid/boards', (request, response) => { //Get the Boards of the User with ID
-
+app.get('/api/users/:userid/boards', async (request, response) => { //Get the Boards of the User with ID
+    const user = await User.findByPk(request.params.userid)
+    const boards = await user.getBoards()
+    response.send(boards)
 })
 
-app.post('/api/users/:userid', (request, response) => { // Update User with that ID
-
+app.post('/api/users/:userid', async (request, response) => { // Update User with that ID
+    const user = await User.findByPk(request.params.userid)
+    await user.update(request.body)
+    response.send(user)
 })
 
 app.post('/api/users/:userid/delete', (request, response) => { // Delete User With That ID
-
+    const user = await User.findByPk(request.params.userid)
+    await user.destroy()
+    response.send()
 })
 
 ////Boards
