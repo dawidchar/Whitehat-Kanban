@@ -142,7 +142,7 @@ app.post('/api/board/:id/name', async (request, response) => { //Update Name of 
     }
 })
 
-app.post('/api/board/:id/delete', (request, response) => { //Delete Board With that ID
+app.post('/api/board/:id/delete', async (request, response) => { //Delete Board With that ID
     if (request.params.id) {
         let id = request.params.id;
         await Board.destroy({

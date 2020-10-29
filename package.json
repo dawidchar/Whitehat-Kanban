@@ -30,5 +30,8 @@
     "handlebars": "^4.7.6",
     "sequelize": "^6.3.5",
     "sqlite3": "^5.0.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.6.6"
   }
 }
