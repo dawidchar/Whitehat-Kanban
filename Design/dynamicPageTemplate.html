@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<main>Static Page Contents</main>
+<div id="app">Dynamic Data Content</div>
+
+<script>
+    //Register Partial
+    Handlebars.registerPartial('taskpartial');
+</script>
+<script>
+    //App Run
+    const state = {
+        tasks:[]
+    };
+    const view = state => '{{> taskpartial tasks=tasks}}';
+    const update = {};
+    app.start(document.body, state, view, update);
+</script>
+
+</html>
