@@ -1,6 +1,7 @@
 const express = require('express')
 const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
+const { Board, User, Task, sequelize } = require('./models/models');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const app = express()
 
@@ -60,12 +61,12 @@ app.post('/api/users/:userid/delete', (request, response) => { // Delete User Wi
 
 ////Boards
 
-app.get('/api/boards', (request, response) => { //Get All Boards
-
+app.get('/api/boards', async (request, response) => { //Get All Boards
+    let boards = await Board.findAll();
+    response.send(JSON.stringify(boards, null, 2))
 })
 
 app.post('/api/boards', (request, response) => { //Create New Board
-
 })
 
 app.get('/api/board/:id', (request, response) => { //Get Board With ID
@@ -117,4 +118,7 @@ app.post('/api/task/:taksid/delete', (request, response) => { // Delete Task Wit
 })
 
 
-app.listen(3000, () => console.log('web server running on port 3000'))
+app.listen(3000, () => {
+    sequelize.sync();
+    console.log('web server running on port 3000')
+})
