@@ -2,12 +2,10 @@ const express = require('express')
 const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
-const { Board, User, Task, sequelize } = require('./models/models');
+const { Board, User, Task, sequelize } = require('./server/models/models.js');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 
-
 const app = express()
-const { Board, User, Task, sequelize } = require('models')
 
 const handlebars = expressHandlebars({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
