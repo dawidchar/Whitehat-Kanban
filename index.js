@@ -159,8 +159,16 @@ app.post('/api/board/:id/delete', async (request, response) => { //Delete Board 
 
 //// Tasks
 
-app.get('/api/board/:id/tasks', (request, response) => { // Get Tasks From the Board With that Board ID
-
+app.get('/api/board/:id/tasks', async (request, response) => { // Get Tasks From the Board With that Board ID
+    if (request.params.id) {
+        let id = request.params.id;
+        let task = await Task.create({ name: 'test' })
+        board.addTask(task)
+        let tasks = await board.getTasks();
+        response.send(tasks);
+    } else {
+        response.send(false);
+    }
 })
 
 app.post('/api/board/:id/tasks', (request, response) => {// Create a New Task For the Board with that Board ID
