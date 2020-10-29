@@ -42,33 +42,41 @@ app.get('/board/:id', async (request, response) => { // Specific Board Page
 })
 
 
-
 ///////////// REST /////////////
 
 ////Users
 
 app.get('/api/users', (request, response) => { //Get All Users
-
+    const users = User.all
+    response.send(users)
 })
 
 app.post('/api/users', (request, response) => { // Create New User
-
+    User.all.push(request.body)
+    response.send()
 })
 
-app.get('/api/users/:userid', (request, response) => { //Get User with ID
-
+app.get('/api/users/:userid', async (request, response) => { //Get User with ID
+    const user = await User.findByPk(request.params.userid)
+    response.send(user)
 })
 
-app.get('/api/users/:userid/boards', (request, response) => { //Get the Boards of the User with ID
-
+app.get('/api/users/:userid/boards', async (request, response) => { //Get the Boards of the User with ID
+    const user = await User.findByPk(request.params.userid)
+    const boards = await user.getBoards()
+    response.send(boards)
 })
 
-app.post('/api/users/:userid', (request, response) => { // Update User with that ID
-
+app.post('/api/users/:userid', async (request, response) => { // Update User with that ID
+    const user = await User.findByPk(request.params.userid)
+    await user.update(request.body)
+    response.send(user)
 })
 
 app.post('/api/users/:userid/delete', (request, response) => { // Delete User With That ID
-
+    const user = await User.findByPk(request.params.userid)
+    await user.destroy()
+    response.send()
 })
 
 ////Boards
