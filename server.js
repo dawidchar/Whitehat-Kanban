@@ -80,7 +80,7 @@ app.post('/api/users/:userid', async (request, response) => { // Update User wit
     response.send(user)
 })
 
-app.post('/api/users/:userid/delete', (request, response) => { // Delete User With That ID
+app.post('/api/users/:userid/delete', async (request, response) => { // Delete User With That ID
     const user = await User.findByPk(request.params.userid)
     await user.destroy()
     response.send()
