@@ -1,6 +1,7 @@
 const express = require('express')
 const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
+const bodyParser = require('body-parser')
 const { Board, User, Task, sequelize } = require('./models/models');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const app = express()
@@ -12,6 +13,11 @@ const handlebars = expressHandlebars({
 app.use(express.static('public'))
 app.engine('handlebars', handlebars)
 app.set('view engine', 'handlebars')
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 app.get('/', (request, response) => { //Login Page
     response.render('login', {date: new Date()})
@@ -66,11 +72,32 @@ app.get('/api/boards', async (request, response) => { //Get All Boards
     response.send(JSON.stringify(boards, null, 2))
 })
 
-app.post('/api/boards', (request, response) => { //Create New Board
+app.post('/api/boards', async (request, response) => { //Create New Board
+    if (request.body.bName) {
+        let bName = request.body.bName;
+        let userId = request.body.userid;
+        const user = await User.findOne({
+            where: { id: userId}
+        });
+        const board = await Board.create({title: bName})
+        let handler = await user.addBoard(board);
+        response.send(true);
+    } else {
+        response.send(false);
+    }
+    
 })
 
-app.get('/api/board/:id', (request, response) => { //Get Board With ID
-
+app.get('/api/board/:id', async (request, response) => { //Get Board With ID
+    if (request.params.id) {
+        let id = request.params.id;
+        let board = await Board.findOne({
+            where: {id: id}
+        });
+        response.send(board)
+    } else {
+        response.send(false);
+    }
 })
 
 app.post('/api/board/:id', (request, response) => { //Update Board with that ID
