@@ -1,20 +1,64 @@
 <!DOCTYPE html>
 <html>
+
 <main>Static Page Contents</main>
 <div id="app">Dynamic Data Content</div>
 
-<script>
-    //Register Partial
-    Handlebars.registerPartial('taskpartial');
-</script>
 <script>
     //App Run
     const state = {
         tasks:[]
     };
-    const view = state => '{{> taskpartial tasks=tasks}}';
-    const update = {};
-    app.start(document.body, state, view, update);
+    const view = state => `{{> taskspartial tasks="state.tasks"}}`;
+    const update = {
+        getData: async (state) => {
+            state.tasks = await fetch("/api/tasks").then(res => res.json())
+            // ⬇ Static Data For Testing and Proof of Concept
+            // state.tasks = [{id:1, name:"My name 1",user:"Bob", state:0}, {id:2, name:"Dishes", user:"Frank", state:0}, {id:3,name:"Take out Trash", user:"Max", state:1}]
+            return state
+        }
+    };
+    app.start("app", state, view, update);
+    app.run('getData')
 </script>
 
 </html>
+
+<!-- ############   Handlebar Partials   ############# -->
+<!-- Will be located in /views/partial/{partialname}.handlebars -->
+
+
+
+<!-- /////////   taskspartial.handlebars  /////////-->
+<div style="background-color: lime;">
+    {{> tasks tasks=tasks state=0}}
+</div>
+<div style="background-color: orange;">
+    {{> tasks tasks=tasks state=1}}
+</div>
+<div style="background-color: red;">
+    {{> tasks tasks=tasks state=2}}
+</div>
+
+
+
+<!-- /////////   tasks.handlebars  /////////-->
+<!-- Note: Do Not Edit -->
+<ul>
+    ${ {{{tasks}}}.map(task => {
+    if (task.state == {{state}})
+    {
+        return `{{> task taskname="${task.name}" taskuser="${task.user}" taskid="${task.id}"}}`
+    
+    }}).join("")}
+</ul>
+
+
+
+<!-- /////////   task.handlebar   ///////// -->
+<li>
+    <h6>{{{taskid}}}</h6>
+    <h1>{{{taskname}}}</h1>
+    <h4>{{{taskuser}}}</h4>
+</li>
+
