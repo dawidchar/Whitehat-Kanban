@@ -87,11 +87,12 @@ app.post('/api/board/:id/delete', (request, response) => { //Delete Board With t
 //// Tasks
 
 app.get('/api/board/:id/tasks', (request, response) => { // Get Tasks From the Board With that Board ID
-
+    
 })
 
-app.post('/api/board/:id/tasks', (request, response) => {// Create a New Task For the Board with that Board ID
-
+app.post('/api/board/:id/tasks', async (request, response) => {// Create a New Task For the Board with that Board ID
+    const task = await new Task(request.body)
+    response.send(task)
 })
 
 //(Each task has a unique ID regardless of their board so we can just refrence it)
@@ -100,8 +101,10 @@ app.get('/api/task/:taksid', (request, response) => { // Get A Single Task
 
 })
 
-app.post('/api/task/:taksid', (request, response) => {// Update a Specific Task with that Task ID
-
+app.post('/api/task/:taskid', async (request, response) => {// Update a Specific Task with that Task ID
+    const task = await Task.findByPk(request.params.taskid)
+    await task.update(request.body)
+    response.send(task)
 })
 
 app.post('/api/task/:taksid/description', (request, response) => {// Update the Description of Specific Task with that Task ID
