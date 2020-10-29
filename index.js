@@ -4,6 +4,8 @@ const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const { Board, User, Task, sequelize } = require('./models/models');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
+
+
 const app = express()
 
 const handlebars = expressHandlebars({
@@ -88,6 +90,7 @@ app.post('/api/boards', async (request, response) => { //Create New Board
     
 })
 
+
 app.get('/api/board/:id', async (request, response) => { //Get Board With ID
     if (request.params.id) {
         let id = request.params.id;
@@ -96,7 +99,7 @@ app.get('/api/board/:id', async (request, response) => { //Get Board With ID
         });
         response.send(board)
     } else {
-        response.send(false);
+        response.send({});
     }
 })
 
