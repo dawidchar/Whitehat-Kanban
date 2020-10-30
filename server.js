@@ -163,12 +163,12 @@ app.post('/api/board/:id/removeuser/:userid', async (req, res) => { //Update Boa
     }
 })
 
-app.post('/api/board/:id/title', async (req, res) => { //Update Title of Board with that ID
-    await Board.update({ title: req.body.title }, {
-        where: { id: req.params.id }
-    })
-    res.send(true)
-})
+// app.post('/api/board/:id/title', async (req, res) => { //Update Title of Board with that ID
+//     await Board.update({ title: req.body.title }, {
+//         where: { id: req.params.id }
+//     })
+//     res.send(true)
+// })
 
 app.post('/api/board/:id/delete', async (req, res) => { //Delete Board With that ID
     await Board.destroy({
