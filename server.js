@@ -111,7 +111,26 @@ app.get('/api/board/:id', async (req, res) => { //Get Board With ID
 })
 
 app.post('/api/board/:id', async (req, res) => { //Update Board with that ID
-    res.send(false)
+    let result = false;
+    if (req.body.title) {
+        await Board.update({ title: req.body.title }, {
+            where: { id: req.params.id }
+        })
+        result = true;
+    }
+    if (req.body.image) {
+        await Board.update({ image: req.body.image }, {
+            where: { id: req.params.id }
+        })
+        result = true
+    }
+    if (req.body.desc) {
+        await Board.update({ desc: req.body.desc }, {
+            where: { id: req.params.id }
+        })
+        result = true;
+    }
+    res.send(result)
 })
 
 app.post('/api/board/:id/adduser/:userid', async (req, res) => { //Update Board -- Add User
