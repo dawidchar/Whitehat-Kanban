@@ -4,6 +4,7 @@
   "description": "Our new and amazing Kanban Board ",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,6 +33,7 @@
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
-    "jsdoc": "^3.6.6"
+    "jsdoc": "^3.6.6",
+    "nodemon": "^2.0.6"
   }
 }
