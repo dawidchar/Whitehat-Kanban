@@ -1,1 +1,31 @@
-<h1>Login Page</h1>
+<div class="form">
+   <div id="app"></div>
+</div>
+
+<script>
+    const state = {
+        loginstate: true
+    };
+    const view = state => `${(state.loginstate) ? `{{> loginform}}` : `{{> signupform }}` }`
+    const update = {
+        login: (state) => {
+            state.loginstate = true
+            return state
+        },
+        signup: (state) => {
+            state.loginstate = false
+            return state
+        }
+    }
+    app.start("app", state, view, update)
+</script>
+
+<style>
+   body {
+       background: url("https://cdn.dribbble.com/users/1162077/screenshots/3029551/workspace2.jpg") no-repeat center center fixed;
+       background-size: cover;
+   }
+   body::after {
+       opacity: 0.8;
+   }
+</style>
