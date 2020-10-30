@@ -1,8 +1,8 @@
-<ul>
+<ul class="pt-1" style="padding-left: 20px;">
     ${ {{{tasks}}}.map(task => {
     if (task.state == {{state}})
     {
-        return `{{> SingleTask taskname="${task.name}" taskuser="${task.UserId}" taskid="${task.id}"}}`
+        return `{{> SingleTask taskname="${task.name}" username="${task.User.name}" useravatar="${task.User.avatar}"}}`
     
     }}).join("")}
 </ul>
