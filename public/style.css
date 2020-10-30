@@ -4,10 +4,6 @@
     font-family: 'Nunito', sans-serif;
 }
 
-*:focus {
-    outline: none;
-}
-
 .form {
     position: absolute;
     top: 50%;
@@ -39,19 +35,28 @@ input {
     color: darkgrey;
     width: 100%; 
 }
-.btn {
+input:focus {
+    outline: none;
+}
+
+.button {
     text-align: center;
     background-color: #8cc076;
     color: #ffffff;
 }
-.btn:hover {
+.button:hover {
     filter: brightness(105%);
     color: #fff;
 }
-a {
+.signup-btn, .login-btn {
     color: #8cc076;
 }
-a:hover {
+.signup-btn:hover {
+    color: #8cc076;
+    text-decoration: underline;
+}
+
+.login-btn:hover {
     color: #8cc076;
     text-decoration: underline;
 }
