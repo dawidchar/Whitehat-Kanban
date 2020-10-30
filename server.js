@@ -89,11 +89,11 @@ app.get('/api/boards', async (req, res) => { //Get All Boards
 })
 
 app.post('/api/boards', async (req, res) => { //Create New Board
-    if (req.body.title && req.body.userid) {
+    if (req.body.title && req.body.userid && req.body.image && req.body.desc) {
         const user = await User.findOne({
             where: { id: req.body.userid }
         });
-        const board = await Board.create({ title: req.body.title })
+        const board = await Board.create({ title: req.body.title, image: req.body.image, desc: req.body.desc })
         await user.addBoard(board);
         res.send(true);
     } else {
