@@ -1,1 +1,80 @@
-<h1>Board</h1>
+<h1 id="boardtitle" class="text-center">Board Name</h1>
+<h5 id="boarddesc" class="text-center font-weight-light"></h5>
+
+
+<div class="mx-auto p-5 d-flex justify-content-center flex-column" style="width:95%">
+    <div class="collab-container shadow mb-5">
+        <h5 class="text-center font-weight-light">Collabarators</h5>
+        <div id="collabapp"></div>
+    </div>
+    <div class="d-flex flex-row flex-wrap justify-content-around" id="app"> </div>
+    <div class="trashicon-container rounded-circle shadow p-4 mx-auto"
+        style="margin-top:10rem; width:7rem; height:7rem;">
+        <div class="imageicon"
+            style="background-image: url('https://icons-for-free.com/iconfiles/png/512/delete+remove+trash+trash+bin+trash+can+icon-1320073117929397588.png');">
+        </div>
+    </div>
+</div>
+
+<script>
+    const boardid = window.location.pathname.split('/')[2]
+    const state = {
+        tasks: [],
+        board: {}
+    };
+    const view = state => `{{> MainTasksView tasks="state.tasks"}}`;
+    const collabview = state => `{{> CollabUserBar}}`
+    const update = {
+        getTasks: async (state) => {
+            state.tasks = await fetch(`/api/board/${boardid}/tasks`).then(res => res.json())
+            console.log(state.tasks)
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+            return state
+        }
+    };
+    const boardUpdate = {
+        getBoard: async (state) => {
+            state.board = await fetch(`/api/board/${boardid}`).then(res => res.json())
+            console.log(state.board.users)
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+            document.querySelector("#boardtitle").innerText = state.board.title
+            document.querySelector("#boarddesc").innerText = state.board.desc
+            return state
+        }
+    }
+    app.start("app", state, view, update);
+    app.start("collabapp", state, collabview, boardUpdate);
+    app.run('getTasks')
+    app.run('getBoard')
+
+</script>
+
+<style>
+    .collab-container {
+        width: 100%;
+        height: 6rem;
+        border-top-right-radius: 2rem;
+        border-bottom-left-radius: 2rem;
+    }
+
+    .imageicon {
+        background-position: center;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    .trashicon-container {
+        transition-timing-function: ease-in-out;
+        transition-duration: 0.1s;
+    }
+
+    .trashicon-container:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    }
+</style>

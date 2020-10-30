@@ -183,7 +183,7 @@ app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Boar
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
-    let tasks = await board.getTasks();
+    let tasks = await board.getTasks({include: { model: User}});
     res.send(tasks);
 })
 
@@ -213,7 +213,8 @@ app.post('/api/board/:id/tasks', async (req, res) => {// Create a New Task For t
 
 app.get('/api/task/:taskid', async (req, res) => { // Get A Single Task 
     let task = await Task.findOne({
-        where: { id: req.params.taskid }
+        where: { id: req.params.taskid },
+        include: { model: User}
     });
     res.send(task)
 })

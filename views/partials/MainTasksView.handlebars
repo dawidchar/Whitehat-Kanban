@@ -1,0 +1,29 @@
+<div class="mx-2 card p-4 my-2 shadow" style="width:30rem">
+    <h2>To Do</h2>
+    <div class="taskcolumn rounded" style="background-color: rgba(205, 255, 55, 0.698);">
+        {{> TasksList tasks=tasks state=0}}
+    </div>
+</div>
+
+<div class="mx-2 card p-4 my-2 shadow" style="width:30rem">
+    <h2>In Progress</h2>
+    <div class="taskcolumn rounded" style="background-color: rgba(255, 187, 0, 0.698);">
+        {{> TasksList tasks=tasks state=1}}
+    </div>
+</div>
+
+<div class="mx-2 card p-4 my-2 shadow" style="width:30rem">
+    <h2>Done</h2>
+    <div class="taskcolumn rounded font-italic" style="background-color: rgba(255, 0, 0, 0.698); text-decoration:line-through">
+        {{> TasksList tasks=tasks state=2}}
+    </div>
+</div>
+
+
+
+<style>
+    .taskcolumn {
+        height: 100%;
+        min-height: 10rem;
+    }
+</style>

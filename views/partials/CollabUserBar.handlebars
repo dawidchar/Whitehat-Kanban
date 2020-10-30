@@ -1,0 +1,4 @@
+<div class="mx-auto d-flex justify-content-center align-items-center" style="width: 90%;">
+    ${(state.board.users) ? state.board.users.map(user =>
+    `{{> CollabUserIcon avatar='${user.avatar}' name='${user.name}' }}`).join("") : ``}
+    <div>
