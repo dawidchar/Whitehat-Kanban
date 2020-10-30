@@ -4,6 +4,7 @@
   "description": "Our new and amazing Kanban Board ",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,7 +25,15 @@
   "homepage": "https://github.com/dawidchar/Whitehat-Kanban#readme",
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
-    "handlebars": "^4.7.6"
+    "handlebars": "^4.7.6",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.6.6",
+    "nodemon": "^2.0.6"
   }
 }
