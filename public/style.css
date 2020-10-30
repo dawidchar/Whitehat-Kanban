@@ -39,12 +39,12 @@ input:focus {
     outline: none;
 }
 
-.btn {
+.button {
     text-align: center;
     background-color: #8cc076;
     color: #ffffff;
 }
-.btn:hover {
+.button:hover {
     filter: brightness(105%);
     color: #fff;
 }
