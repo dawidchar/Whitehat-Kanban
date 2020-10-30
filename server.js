@@ -188,7 +188,7 @@ app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Boar
 })
 
 app.post('/api/board/:id/tasks', async (req, res) => {// Create a New Task For the Board with that Board ID
-    const task = await Task.create(req.body)
+    const task = await Task.create({ name: req.body.name, state: 0 })
     let id = req.params.id;
     let board = await Board.findOne({
         where: { id: id }
@@ -219,14 +219,20 @@ app.get('/api/task/:taskid', async (req, res) => { // Get A Single Task
 })
 
 app.post('/api/task/:taskid', async (req, res) => {// Update a Specific Task with that Task ID
-    res.send(false)
-})
-
-app.post('/api/task/:taskid/name', async (req, res) => {// Update the Name of Specific Task with that Task ID
-    await Task.update({ name: req.body.name }, {
-        where: { id: req.params.taskid }
-    })
-    res.send(true)
+    let result = false;
+    if (req.body.name) {
+        await Task.update({ name: req.body.name }, {
+            where: { id: req.params.taskid }
+        })
+        result = true;
+    }
+    if (req.body.state) {
+        await Task.update({ name: req.body.name }, {
+            where: { id: req.params.taskid }
+        })
+        result = true;
+    }
+    res.send(result)
 })
 
 app.post('/api/task/:taskid/assign/:userid', async (req, res) => {// Update the assigned User of Specific Task with that Task ID
