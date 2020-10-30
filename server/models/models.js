@@ -6,7 +6,9 @@ const sequelize = process.env.NODE_ENV === 'test'
 
 class Board extends Model { }
 Board.init({
-    title: DataTypes.STRING
+    title: DataTypes.STRING,
+    image: DataTypes.STRING,
+    desc: DataTypes.STRING
 }, { sequelize })
 
 class User extends Model { }
