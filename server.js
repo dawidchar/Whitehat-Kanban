@@ -89,11 +89,11 @@ app.get('/api/boards', async (req, res) => { //Get All Boards
 })
 
 app.post('/api/boards', async (req, res) => { //Create New Board
-    if (req.body.title && req.body.userid) {
+    if (req.body.title && req.body.userid && req.body.image && req.body.desc) {
         const user = await User.findOne({
             where: { id: req.body.userid }
         });
-        const board = await Board.create({ title: req.body.title })
+        const board = await Board.create({ title: req.body.title, image: req.body.image, desc: req.body.desc })
         await user.addBoard(board);
         res.send(true);
     } else {
@@ -111,7 +111,26 @@ app.get('/api/board/:id', async (req, res) => { //Get Board With ID
 })
 
 app.post('/api/board/:id', async (req, res) => { //Update Board with that ID
-    res.send(false)
+    let result = false;
+    if (req.body.title) {
+        await Board.update({ title: req.body.title }, {
+            where: { id: req.params.id }
+        })
+        result = true;
+    }
+    if (req.body.image) {
+        await Board.update({ image: req.body.image }, {
+            where: { id: req.params.id }
+        })
+        result = true
+    }
+    if (req.body.desc) {
+        await Board.update({ desc: req.body.desc }, {
+            where: { id: req.params.id }
+        })
+        result = true;
+    }
+    res.send(result)
 })
 
 app.post('/api/board/:id/adduser/:userid', async (req, res) => { //Update Board -- Add User
@@ -144,12 +163,12 @@ app.post('/api/board/:id/removeuser/:userid', async (req, res) => { //Update Boa
     }
 })
 
-app.post('/api/board/:id/title', async (req, res) => { //Update Title of Board with that ID
-    await Board.update({ title: req.body.title }, {
-        where: { id: req.params.id }
-    })
-    res.send(true)
-})
+// app.post('/api/board/:id/title', async (req, res) => { //Update Title of Board with that ID
+//     await Board.update({ title: req.body.title }, {
+//         where: { id: req.params.id }
+//     })
+//     res.send(true)
+// })
 
 app.post('/api/board/:id/delete', async (req, res) => { //Delete Board With that ID
     await Board.destroy({
