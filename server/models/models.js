@@ -19,7 +19,8 @@ User.init({
 
 class Task extends Model { }
 Task.init({
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    state: DataTypes.INTEGER
 }, { sequelize })
 
 User.belongsToMany(Board, { as: 'boards', through: 'User_Board' })
