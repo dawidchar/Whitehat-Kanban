@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.get('/', (req, res) => { //Login Page
-    res.render('login')
+    res.render('login', { layout: 'home' })
 })
 
 app.get('/boards', (req, res) => { //All Boards Page
