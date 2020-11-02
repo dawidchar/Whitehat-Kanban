@@ -29,3 +29,36 @@
        opacity: 0.8;
    }
 </style>
+
+
+<script>
+    async function signup(e) {
+        e.preventDefault()
+        const location
+        if (await fetch(`/api/users/${$('#signup-username').val()}/exists`)) {
+            alert('Username Already Exists')
+            return false
+        }
+        $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                "name": $('#signup-name').val(),
+                "username": $('#signup-username').val(),
+                "avatar": $('#signup-avatar').val()
+            }),
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                window.location.replace('/myboards')
+            },
+            error: function (error) {
+                console.log(error)
+                alert('Error Creating User', error)
+            },
+            processData: false,
+            type: 'POST',
+            url: '/api/users'
+        });
+        return false
+    }
+</script>
