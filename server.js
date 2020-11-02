@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.use(function (req, res, next) {
-    if (req.url == '/' || (req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) ) {
+    if (req.url == '/' || req.url.includes('api') ) { //(req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) || (req.url.method == "POST" && req.url == '/api/users') 
     } else {
         if (!req.cookies.userid) {
             res.redirect('/')
