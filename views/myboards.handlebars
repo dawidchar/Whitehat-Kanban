@@ -65,7 +65,7 @@
 <div id="app" />
 </div>
 <script>
-
+    const userid = getCookie("userid")
     const state = {
         boards: [],
         userImageRight: 0,
@@ -74,7 +74,7 @@
     const view = state => `{{> myboards }}`
     const update = {
         populate: async (state) => {
-            state.boards = await fetch(`/api/users/{{ userid }}/boards`).then(res => res.json())
+            state.boards = await fetch(`/api/users/${userid}/boards`).then(res => res.json())
             return state;
         },
         removeHiddenDivs: (state) => {
