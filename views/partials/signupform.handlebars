@@ -2,18 +2,20 @@
     <h2 class="mb-4">Sign Up</h2>
     {{!-- action="/api/users" method="POST" --}}
     <form onsubmit="return signup(event)">
+        
         <p class="input-field">
             <i class="fas fa-user-circle"></i>&nbsp;
-            <input id="signup-name" name="name" type="text" placeholder="Name" required>
+            <input id="signup-name" name="name" type="text" placeholder="Name" required> 
         </p>
         <p class="input-field">
             <i class="fas fa-user"></i>&nbsp;
-            <input id="signup-username" name="username" type="text" placeholder="Username" required>
+            <input id="signup-username" name="username" type="text" placeholder="Username" required> 
         </p>
         <p class="input-field">
             <i class="fas fa-portrait"></i>&nbsp;
-            <input id="signup-avatar" name="avatar" type="text" placeholder="Avatar URL" required>
+            <input id="signup-avatar" name="avatar" type="text" placeholder="Avatar URL" required> 
         </p>
+
         {{!-- <p class="input-field">
             <i class="fas fa-lock"></i>&nbsp;
             <input type="password" placeholder="Password" required>  
