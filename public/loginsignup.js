@@ -34,8 +34,3 @@ async function login(e) {
     await fetch(`/api/users/${document.querySelector("#login-username").value.toLowerCase()}/login`).then(res => { res.json().then(data => { if (data) { window.location.replace("/myboards") } else { alert("Error Logging In") } }) })
     // window.location.replace("/myboards")
 }
-
-function logout() {
-    // document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-    window.location.replace("/")
-}

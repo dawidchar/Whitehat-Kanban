@@ -1,7 +1,14 @@
 <nav>
     <a class="logo" href="/boards"><i class="fas fa-paperclip"></i>FLIMFLAM</a>
-    <a class="logout" onclick="logout()" style="cursor:pointer">Log Out</a>
+    <a class="logout" onclick='logoutbutton()' style="cursor:pointer">Log Out</a>
 </nav>
+
+<script>
+    function logoutbutton() {
+        document.cookie.split(";").forEach(function (c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+        window.location.replace("/")
+    }
+</script>
 
 <style>
     nav {
@@ -13,23 +20,29 @@
         align-items: center;
         justify-content: space-between;
         padding: 8px 10px;
-    } 
+    }
+
     .logo i {
         margin-right: 2px;
     }
+
     .logo {
         letter-spacing: 2px;
     }
-    .logo, .logout {
+
+    .logo,
+    .logout {
         color: #fff;
         opacity: 0.85;
         font-weight: 900;
     }
+
     .logo:hover {
         color: #fff;
         opacity: 1;
         text-decoration: none;
     }
+
     .logout:hover {
         color: #fff;
         opacity: 1;
