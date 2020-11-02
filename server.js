@@ -4,7 +4,8 @@ const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const { Board, User, Task, sequelize } = require('./server/models/models.js');
-const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+const { request } = require('express');
 
 const app = express()
 
@@ -25,7 +26,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.use(function (req, res, next) {
-    if (req.url == '/' || (req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) ) {
+    if (req.url == '/' || req.url.includes('api') ) { //(req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) || (req.url.method == "POST" && req.url == '/api/users') 
     } else {
         if (!req.cookies.userid) {
             res.redirect('/')
@@ -42,8 +43,8 @@ app.get('/boards', (req, res) => { //All Boards Page
     res.render('boards')
 })
 
-app.get('/:userid/myboards', (req, res) => { //Boards You are part of Page
-    res.render('myboards', {userid: req.params.userid})
+app.get('/myboards', (req, res) => { //Boards You are part of Page
+    res.render('myboards')
 })
 
 
@@ -294,8 +295,8 @@ app.post('/api/task/:taskid', async (req, res) => {// Update a Specific Task wit
         })
         result = true;
     }
-    if (req.body.state) {
-        await Task.update({ name: req.body.name }, {
+    if (req.body.state || req.body.state == 0) {
+        await Task.update({ state: req.body.state }, {
             where: { id: req.params.taskid }
         })
         result = true;
