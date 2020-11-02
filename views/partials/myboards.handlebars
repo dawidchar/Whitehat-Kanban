@@ -1,0 +1,11 @@
+<div class="main-grid">
+    ${state.boards.map(board => `
+    <a href="/board/${board.id}">
+    <article style="background-image: url(${board.image});">
+        <div class="board-info"><span style="top:40%;position:relative;">${board.desc}</span></div>
+        <h2>${board.title}</h2>
+    </article>`).join(' ')}
+    </a>
+</div>
+<div style="visibility: hidden;">
+</div>
