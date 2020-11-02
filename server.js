@@ -116,7 +116,6 @@ app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of t
         },
         include: { model: Board, as: "boards", include: { model: User, as: "users" } }
     })
-    console.log(user.boards[0].users);
     res.send(user.boards);
 })
 
