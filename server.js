@@ -49,8 +49,21 @@ app.get('/api/users', async (req, res) => { //Get All Users
     res.send(users)
 })
 
-app.post('/api/users', async (req, res) => { // Create New User
-    await User.create(req.body)
+app.post('/api/users', async (req, res) => { // Create New User (Must have username and must be unique)
+    if (!req.body.username){
+        res.send({error:'A Username must be provided'})
+        return
+    }
+    if (await User.findOne({where:{username:req.body.username}})) {
+        res.send({error:'Username Taken'})
+        return
+    }
+    try {
+        await User.create(req.body)
+    } catch (error) {
+        console.log('Create User Error', error)
+        res.send({error:error})
+    }
     res.send(true)
 })
 
@@ -66,9 +79,16 @@ app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of t
 })
 
 app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
-    await User.update(req.body, {
-        where: { id: req.params.userid }
-    })
+    if (req.body.name) {
+        await User.update({ name: req.body.name }, {
+            where: { id: req.params.userid }
+        })
+    }
+    if (req.body.avatar) {
+        await User.update({ avatar: req.body.avatar }, {
+            where: { id: req.params.userid }
+        })
+    }
     res.send(true)
 })
 
@@ -183,7 +203,7 @@ app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Boar
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
-    let tasks = await board.getTasks({include: { model: User}});
+    let tasks = await board.getTasks({ include: { model: User } });
     res.send(tasks);
 })
 
@@ -214,7 +234,7 @@ app.post('/api/board/:id/tasks', async (req, res) => {// Create a New Task For t
 app.get('/api/task/:taskid', async (req, res) => { // Get A Single Task 
     let task = await Task.findOne({
         where: { id: req.params.taskid },
-        include: { model: User}
+        include: { model: User }
     });
     res.send(task)
 })
