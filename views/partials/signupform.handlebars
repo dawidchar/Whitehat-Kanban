@@ -1,17 +1,28 @@
 <div class="container">
     <h2 class="mb-4">Sign Up</h2>
-    <form action="/boards" method="GET">
+    {{!-- action="/api/users" method="POST" --}}
+    <form onsubmit="return signup(event)">
+
+        <p class="input-field">
+            <i class="fas fa-user-circle"></i>&nbsp;
+            <input id="signup-name" name="name" type="text" placeholder="Name" required>
+        </p>
         <p class="input-field">
             <i class="fas fa-user"></i>&nbsp;
-            <input type="text" placeholder="Username" required>
+            <input id="signup-username" name="username" type="text" placeholder="Username" required>
         </p>
+        <p class="input-field">
+            <i class="fa fa-portrait"></i>&nbsp;
+            <input id="signup-avatar" name="avatar" type="text" placeholder="Avatar URL" required>
+        </p>
+
         {{!-- <p class="input-field">
             <i class="fas fa-lock"></i>&nbsp;
             <input type="password" placeholder="Password" required>  
         </p> --}}
-        <p><input class="btn" type="submit" value="Sign Up" /></p>
-        <p>Already have an account? Log in 
+        <p><input class="btn" type="submit" value="Sign Up" onclick="" /></p>
+        <p>Already have an account? Log in
             <a onclick="event.preventDefault();app.run('login')" class="login-btn" href="/">
-            here</a>!</p>
+                here</a>!</p>
     </form>
 </div>
