@@ -19,5 +19,18 @@ async function signup(e) {
         body: JSON.stringify(userobj)
     }
     await fetch('/api/users', postRequest)
+    window.location.replace("/myboards")
     return false
+}
+
+async function login(e) {
+    e.preventDefault()
+    const reqUserExists = await fetch(`/api/users/${document.querySelector("#login-username").value.toLowerCase()}/exists`)
+    const userexists = await reqUserExists.json()
+    if (!userexists) {
+        alert('User Does Not Exist')
+        return false
+    }
+    await fetch(`/api/users/${document.querySelector("#login-username").value.toLowerCase()}/login`).then(res => { res.json().then(data => { if (data) { window.location.replace("/myboards") } else { alert("Error Logging In") } }) })
+    // window.location.replace("/myboards")
 }

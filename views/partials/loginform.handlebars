@@ -1,15 +1,15 @@
 <div class="container">
     <h2 class="mb-4">Login</h2>
-    <form action="/boards" method="GET">
+    <form onsubmit="return login(event)">
         <p class="input-field">
             <i class="fas fa-user"></i>&nbsp;
-            <input type="text" placeholder="Username" required>
+            <input id="login-username" type="text" placeholder="Username" required>
         </p>
         {{!-- <p class="input-field">
             <i class="fas fa-lock"></i>&nbsp;
             <input type="password" placeholder="Password" required>  
         </p> --}}
-        <p><input class="btn" type="submit" value="Login" /></p>
+        <p><button class="btn" type="submit" value="Login" />Login</button></p>
         <p>Not registered? Sign up 
             <a onclick="event.preventDefault();app.run('signup')" class="signup-btn" href="/">
             here</a>!</p>
