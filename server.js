@@ -58,13 +58,14 @@ app.post('/api/users', async (req, res) => { // Create New User (Must have usern
         res.send({error:'Username Taken'})
         return
     }
+    let user = {}
     try {
-        await User.create(req.body)
+        user = await User.create(req.body)
     } catch (error) {
         console.log('Create User Error', error)
         res.send({error:error})
     }
-    res.send(true)
+    res.send(user)
 })
 
 
@@ -76,9 +77,11 @@ app.get('/api/users/:userid', async (req, res) => { //Get User with ID
 app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
     const user = await User.findOne({where:{username:req.params.username}})
     if (user){
-        res.send(true)
+        console.log("USER EXISTS")
+        res.json(true)
     } else {
-        res.send(false)
+        console.log('User Clean')
+        res.json(false)
     }
 })
 
