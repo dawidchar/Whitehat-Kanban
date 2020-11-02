@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.get('/', (req, res) => { //Login Page
-    res.render('login')
+    res.render('login', { layout: 'home' })
 })
 
 app.get('/boards', (req, res) => { //All Boards Page
@@ -49,14 +49,37 @@ app.get('/api/users', async (req, res) => { //Get All Users
     res.send(users)
 })
 
-app.post('/api/users', async (req, res) => { // Create New User
-    await User.create(req.body)
+app.post('/api/users', async (req, res) => { // Create New User (Must have username and must be unique)
+    if (!req.body.username){
+        res.send({error:'A Username must be provided'})
+        return
+    }
+    if (await User.findOne({where:{username:req.body.username}})) {
+        res.send({error:'Username Taken'})
+        return
+    }
+    try {
+        await User.create(req.body)
+    } catch (error) {
+        console.log('Create User Error', error)
+        res.send({error:error})
+    }
     res.send(true)
 })
+
 
 app.get('/api/users/:userid', async (req, res) => { //Get User with ID
     const user = await User.findByPk(req.params.userid)
     res.send(user)
+})
+
+app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
+    const user = await User.findOne({where:{username:req.params.username}})
+    if (user){
+        res.send(true)
+    } else {
+        res.send(false)
+    }
 })
 
 app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of the User with ID
@@ -66,9 +89,16 @@ app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of t
 })
 
 app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
-    await User.update(req.body, {
-        where: { id: req.params.userid }
-    })
+    if (req.body.name) {
+        await User.update({ name: req.body.name }, {
+            where: { id: req.params.userid }
+        })
+    }
+    if (req.body.avatar) {
+        await User.update({ avatar: req.body.avatar }, {
+            where: { id: req.params.userid }
+        })
+    }
     res.send(true)
 })
 
@@ -183,7 +213,7 @@ app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Boar
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
-    let tasks = await board.getTasks();
+    let tasks = await board.getTasks({ include: { model: User } });
     res.send(tasks);
 })
 
@@ -213,7 +243,8 @@ app.post('/api/board/:id/tasks', async (req, res) => {// Create a New Task For t
 
 app.get('/api/task/:taskid', async (req, res) => { // Get A Single Task 
     let task = await Task.findOne({
-        where: { id: req.params.taskid }
+        where: { id: req.params.taskid },
+        include: { model: User }
     });
     res.send(task)
 })
