@@ -119,13 +119,24 @@ app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
         await User.update({ name: req.body.name }, {
             where: { id: req.params.userid }
         })
+        res.send(true)
     }
     if (req.body.avatar) {
         await User.update({ avatar: req.body.avatar }, {
             where: { id: req.params.userid }
         })
+        res.send(true)
     }
-    res.send(true)
+    if (req.body.username) {
+        if (await User.findOne({where:{username:req.body.username}})) {
+            res.send({error:'Username Taken'})
+        } else {
+            await User.update({ avatar: req.body.username }, {
+                where: { id: req.params.userid }
+            })
+            res.send(true)
+        }
+    }
 })
 
 app.post('/api/users/:userid/delete', async (req, res) => { // Delete User With That ID
