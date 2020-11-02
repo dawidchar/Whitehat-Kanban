@@ -1,1 +1,88 @@
 <h1>My Boards</h1>
+ <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+<style>
+    body {
+    background-color: #8896AB;
+    }
+    .main-grid {
+        margin: 1rem;
+        display: grid;
+        position: relative; /* creates absolute positioning containing block */
+        grid-template-columns: auto auto auto;
+        grid-template-rows: none;
+        gap: 1.2rem;
+        font-family: 'Open Sans', sans-serif;
+    }
+    article {
+        border: 1px black solid;
+        position: relative;
+        min-height: 12rem;
+        min-width: 20rem;
+        width: 100%;
+        background-position: center;
+    }
+    article h2 {
+        position: absolute;
+        bottom: 0;
+        text-align: center;
+        width: 100%;
+        border-top: 1px black solid;
+        margin: 0;
+        padding-bottom: 0.5rem;
+        padding-top: 0.5rem;
+        background: #626D58;
+    }
+    .user-image {
+        max-width: 3rem;
+        max-height: 3rem;
+        z-index: 100;
+        position: absolute;
+        border-radius: 50%;
+        margin: 0.3rem;
+        right: 0;
+    }
+    a {
+        color: inherit; /* blue colors for links too */
+        text-decoration: inherit; /* no underline */
+    }
+
+    .board-info {
+        background-color: white;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        position: absolute;
+        z-index: 101;
+        text-align: center;
+        -webkit-transition: opacity 1s;
+    }
+    .board-info:hover {
+        opacity: 0.6;
+        display: block;
+    }
+</style>
+<div id="app-container">
+<div id="app" />
+</div>
+<script>
+
+    const state = {
+        boards: [],
+        userImageRight: 0,
+        userImageIndex: 100
+    };
+    const view = state => `{{> myboards }}`
+    const update = {
+        populate: async (state) => {
+            state.boards = await fetch(`/api/users/{{ userid }}/boards`).then(res => res.json())
+            return state;
+        },
+        removeHiddenDivs: (state) => {
+            document.getElementById('toBeDeleted').remove()
+            return state;
+        }
+    }
+    app.start("app", state, view, update)
+    app.run('populate')
+
+</script>
