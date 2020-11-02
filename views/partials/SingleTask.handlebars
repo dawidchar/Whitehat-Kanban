@@ -1,9 +1,12 @@
-<li style="list-style-type:none; cursor:pointer;" id="{{taskid}}" draggable="true" ondragstart="app.run('dragStart', event)">
-    <div class="position-relative d-flex align-items-center">
-        <h4 class="font-weight-light">{{taskname}}</h4>
-        <div class="mb-1 mr-4 ml-auto" style="width: 1.8rem; height:1.8rem;">
-            <div class="imageicon rounded-circle shadow" style="background-image:url('{{useravatar}}');"
-                data-toggle="tooltip" data-placement="bottom" title="{{username}}"></div>
+<li style="list-style-type:none; cursor:pointer;" id="{{taskid}}" draggable="true"
+    ondragstart="app.run('dragStart', event)">
+    <a data-toggle="modal" data-target="#taskedit-modal">
+        <div class="position-relative d-flex align-items-center">
+            <h4 id="taskname" class="font-weight-light">{{taskname}}</h4>
+            <div class="mb-1 mr-4 ml-auto" style="width: 1.8rem; height:1.8rem;">
+                <div class="imageicon rounded-circle shadow" style="background-image:url('{{useravatar}}');"
+                    data-toggle="tooltip" data-placement="bottom" title="{{username}}"></div>
+            </div>
         </div>
-    </div>
+    </a>
 </li>
