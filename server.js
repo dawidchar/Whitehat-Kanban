@@ -43,8 +43,8 @@ app.get('/boards', (req, res) => { //All Boards Page
     res.render('boards')
 })
 
-app.get('/:userid/myboards', (req, res) => { //Boards You are part of Page
-    res.render('myboards', {userid: req.params.userid})
+app.get('/myboards', (req, res) => { //Boards You are part of Page
+    res.render('myboards')
 })
 
 
