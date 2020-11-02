@@ -4,7 +4,8 @@ const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const { Board, User, Task, sequelize } = require('./server/models/models.js');
-const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+const { request } = require('express');
 
 const app = express()
 
@@ -119,13 +120,24 @@ app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
         await User.update({ name: req.body.name }, {
             where: { id: req.params.userid }
         })
+        res.send(true)
     }
     if (req.body.avatar) {
         await User.update({ avatar: req.body.avatar }, {
             where: { id: req.params.userid }
         })
+        res.send(true)
     }
-    res.send(true)
+    if (req.body.username) {
+        if (await User.findOne({where:{username:req.body.username}})) {
+            res.send({error:'Username Taken'})
+        } else {
+            await User.update({ avatar: req.body.username }, {
+                where: { id: req.params.userid }
+            })
+            res.send(true)
+        }
+    }
 })
 
 app.post('/api/users/:userid/delete', async (req, res) => { // Delete User With That ID
@@ -283,8 +295,8 @@ app.post('/api/task/:taskid', async (req, res) => {// Update a Specific Task wit
         })
         result = true;
     }
-    if (req.body.state) {
-        await Task.update({ name: req.body.name }, {
+    if (req.body.state || req.body.state == 0) {
+        await Task.update({ state: req.body.state }, {
             where: { id: req.params.taskid }
         })
         result = true;

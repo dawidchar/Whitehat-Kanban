@@ -1,20 +1,26 @@
-<div class="mx-2 card p-4 my-2 shadow" style="width:30rem">
+<div class="mx-2 card p-4 my-2 shadow" style="width:30%">
     <h2>To Do</h2>
-    <div class="taskcolumn rounded" style="background-color: rgba(205, 255, 55, 0.698);">
+    <div class="taskcolumn rounded" style="background-color: rgba(205, 255, 55, 0.698);"
+        ondragover="event.preventDefault()"
+        ondrop="app.run('dropToDo', event)">
         {{> TasksList tasks=tasks state=0}}
     </div>
 </div>
 
-<div class="mx-2 card p-4 my-2 shadow" style="width:30rem">
+<div class="mx-2 card p-4 my-2 shadow" style="width:30%">
     <h2>In Progress</h2>
-    <div class="taskcolumn rounded" style="background-color: rgba(255, 187, 0, 0.698);">
+    <div class="taskcolumn rounded" style="background-color: rgba(255, 187, 0, 0.698);"
+    ondragover="event.preventDefault()"
+    ondrop="app.run('dropInProgress', event)">
         {{> TasksList tasks=tasks state=1}}
     </div>
 </div>
 
-<div class="mx-2 card p-4 my-2 shadow" style="width:30rem">
+<div class="mx-2 card p-4 my-2 shadow" style="width:30%">
     <h2>Done</h2>
-    <div class="taskcolumn rounded font-italic" style="background-color: rgba(255, 0, 0, 0.698); text-decoration:line-through">
+    <div class="taskcolumn rounded font-italic" style="background-color: rgba(255, 0, 0, 0.698); text-decoration:line-through"
+    ondragover="event.preventDefault()"
+    ondrop="app.run('dropDone', event)">
         {{> TasksList tasks=tasks state=2}}
     </div>
 </div>
