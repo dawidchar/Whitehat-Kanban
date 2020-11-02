@@ -1,8 +1,16 @@
-<h1>My Boards</h1>
- <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+<center>
+<h1>Your Boards</h1>
+</center>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
 <style>
     body {
     background-color: #8896AB;
+    }
+    .imageicon {
+        background-position: center;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
     }
     .main-grid {
         margin: 1rem;
@@ -78,7 +86,7 @@
             return state;
         },
         removeHiddenDivs: (state) => {
-            document.getElementById('toBeDeleted').remove()
+            document.getElementsByClassName('toBeDeleted').remove()
             return state;
         }
     }

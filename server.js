@@ -110,9 +110,14 @@ app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
 })
 
 app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of the User with ID
-    const user = await User.findByPk(req.params.userid)
-    const boards = await user.getBoards()
-    res.send(boards)
+    const user = await User.findOne({
+        where: {
+            id: req.params.userid
+        },
+        include: { model: Board, as: "boards", include: { model: User, as: "users" } }
+    })
+    console.log(user.boards[0].users);
+    res.send(user.boards);
 })
 
 app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
