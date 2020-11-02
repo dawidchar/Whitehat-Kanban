@@ -4,7 +4,8 @@ const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const { Board, User, Task, sequelize } = require('./server/models/models.js');
-const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+const { request } = require('express');
 
 const app = express()
 
@@ -294,8 +295,8 @@ app.post('/api/task/:taskid', async (req, res) => {// Update a Specific Task wit
         })
         result = true;
     }
-    if (req.body.state) {
-        await Task.update({ name: req.body.name }, {
+    if (req.body.state || req.body.state == 0) {
+        await Task.update({ state: req.body.state }, {
             where: { id: req.params.taskid }
         })
         result = true;
