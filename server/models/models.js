@@ -13,6 +13,11 @@ Board.init({
 
 class User extends Model { }
 User.init({
+    username: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: true
+      },
     name: DataTypes.STRING,
     avatar: DataTypes.STRING
 }, { sequelize })

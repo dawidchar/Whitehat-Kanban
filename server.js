@@ -2,6 +2,7 @@ const express = require('express')
 const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const { Board, User, Task, sequelize } = require('./server/models/models.js');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
 
@@ -16,11 +17,22 @@ app.engine('handlebars', handlebars)
 app.set('view engine', 'handlebars')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(cookieParser())
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
+
+app.use(function (req, res, next) {
+    if (req.url == '/' || (req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) ) {
+    } else {
+        if (!req.cookies.userid) {
+            res.redirect('/')
+        }
+    }
+    next()
+})
 
 app.get('/', (req, res) => { //Login Page
     res.render('login', { layout: 'home' })
@@ -31,7 +43,7 @@ app.get('/boards', (req, res) => { //All Boards Page
 })
 
 app.get('/:userid/myboards', (req, res) => { //Boards You are part of Page
-    res.render('myboards')
+    res.render('myboards', {userid: req.params.userid})
 })
 
 
@@ -49,14 +61,51 @@ app.get('/api/users', async (req, res) => { //Get All Users
     res.send(users)
 })
 
-app.post('/api/users', async (req, res) => { // Create New User
-    await User.create(req.body)
-    res.send(true)
+app.post('/api/users', async (req, res) => { // Create New User (Must have username and must be unique)
+    if (!req.body.username) {
+        res.send({ error: 'A Username must be provided' })
+        return
+    }
+    if (await User.findOne({ where: { username: req.body.username } })) {
+        res.send({ error: 'Username Taken' })
+        return
+    }
+    let user = {}
+    try {
+        user = await User.create(req.body)
+        res.cookie('userid', user.id, {maxAge: 3600000 * 24 * 2 })
+        res.cookie('user-name', user.name)
+    } catch (error) {
+        console.log('Create User Error', error)
+        res.send({ error: error })
+    }
+    res.send(user)
 })
+
 
 app.get('/api/users/:userid', async (req, res) => { //Get User with ID
     const user = await User.findByPk(req.params.userid)
     res.send(user)
+})
+
+
+app.get('/api/users/:username/login', async (req, res) => { //Get User with ID
+    const user = await User.findOne({ where: { username: req.params.username } })
+    res.cookie('userid', user.id, { maxAge: 3600000 * 24 * 2 })
+    res.cookie('user-name', user.name)
+    res.cookie('username', user.username)
+    res.send(user)
+})
+
+app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
+    const user = await User.findOne({ where: { username: req.params.username } })
+    if (user) {
+        console.log("USER EXISTS")
+        res.json(true)
+    } else {
+        console.log('User Clean')
+        res.json(false)
+    }
 })
 
 app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of the User with ID
@@ -66,9 +115,16 @@ app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of t
 })
 
 app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
-    await User.update(req.body, {
-        where: { id: req.params.userid }
-    })
+    if (req.body.name) {
+        await User.update({ name: req.body.name }, {
+            where: { id: req.params.userid }
+        })
+    }
+    if (req.body.avatar) {
+        await User.update({ avatar: req.body.avatar }, {
+            where: { id: req.params.userid }
+        })
+    }
     res.send(true)
 })
 
@@ -183,7 +239,7 @@ app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Boar
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
-    let tasks = await board.getTasks({include: { model: User}});
+    let tasks = await board.getTasks({ include: { model: User } });
     res.send(tasks);
 })
 
@@ -214,7 +270,7 @@ app.post('/api/board/:id/tasks', async (req, res) => {// Create a New Task For t
 app.get('/api/task/:taskid', async (req, res) => { // Get A Single Task 
     let task = await Task.findOne({
         where: { id: req.params.taskid },
-        include: { model: User}
+        include: { model: User }
     });
     res.send(task)
 })
