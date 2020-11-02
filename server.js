@@ -2,6 +2,7 @@ const express = require('express')
 const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const { Board, User, Task, sequelize } = require('./server/models/models.js');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const { request } = require('express');
@@ -17,11 +18,22 @@ app.engine('handlebars', handlebars)
 app.set('view engine', 'handlebars')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(cookieParser())
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
+
+app.use(function (req, res, next) {
+    if (req.url == '/' || (req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) ) {
+    } else {
+        if (!req.cookies.userid) {
+            res.redirect('/')
+        }
+    }
+    next()
+})
 
 app.get('/', (req, res) => { //Login Page
     res.render('login', { layout: 'home' })
@@ -32,7 +44,7 @@ app.get('/boards', (req, res) => { //All Boards Page
 })
 
 app.get('/:userid/myboards', (req, res) => { //Boards You are part of Page
-    res.render('myboards')
+    res.render('myboards', {userid: req.params.userid})
 })
 
 
@@ -51,21 +63,24 @@ app.get('/api/users', async (req, res) => { //Get All Users
 })
 
 app.post('/api/users', async (req, res) => { // Create New User (Must have username and must be unique)
-    if (!req.body.username){
-        res.send({error:'A Username must be provided'})
+    if (!req.body.username) {
+        res.send({ error: 'A Username must be provided' })
         return
     }
-    if (await User.findOne({where:{username:req.body.username}})) {
-        res.send({error:'Username Taken'})
+    if (await User.findOne({ where: { username: req.body.username } })) {
+        res.send({ error: 'Username Taken' })
         return
     }
+    let user = {}
     try {
-        await User.create(req.body)
+        user = await User.create(req.body)
+        res.cookie('userid', user.id, {maxAge: 3600000 * 24 * 2 })
+        res.cookie('user-name', user.name)
     } catch (error) {
         console.log('Create User Error', error)
-        res.send({error:error})
+        res.send({ error: error })
     }
-    res.send(true)
+    res.send(user)
 })
 
 
@@ -74,12 +89,23 @@ app.get('/api/users/:userid', async (req, res) => { //Get User with ID
     res.send(user)
 })
 
+
+app.get('/api/users/:username/login', async (req, res) => { //Get User with ID
+    const user = await User.findOne({ where: { username: req.params.username } })
+    res.cookie('userid', user.id, { maxAge: 3600000 * 24 * 2 })
+    res.cookie('user-name', user.name)
+    res.cookie('username', user.username)
+    res.send(user)
+})
+
 app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
-    const user = await User.findOne({where:{username:req.params.username}})
-    if (user){
-        res.send(true)
+    const user = await User.findOne({ where: { username: req.params.username } })
+    if (user) {
+        console.log("USER EXISTS")
+        res.json(true)
     } else {
-        res.send(false)
+        console.log('User Clean')
+        res.json(false)
     }
 })
 
@@ -94,13 +120,24 @@ app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
         await User.update({ name: req.body.name }, {
             where: { id: req.params.userid }
         })
+        res.send(true)
     }
     if (req.body.avatar) {
         await User.update({ avatar: req.body.avatar }, {
             where: { id: req.params.userid }
         })
+        res.send(true)
     }
-    res.send(true)
+    if (req.body.username) {
+        if (await User.findOne({where:{username:req.body.username}})) {
+            res.send({error:'Username Taken'})
+        } else {
+            await User.update({ avatar: req.body.username }, {
+                where: { id: req.params.userid }
+            })
+            res.send(true)
+        }
+    }
 })
 
 app.post('/api/users/:userid/delete', async (req, res) => { // Delete User With That ID
