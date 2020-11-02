@@ -67,9 +67,19 @@ app.post('/api/users', async (req, res) => { // Create New User (Must have usern
     res.send(true)
 })
 
+
 app.get('/api/users/:userid', async (req, res) => { //Get User with ID
     const user = await User.findByPk(req.params.userid)
     res.send(user)
+})
+
+app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
+    const user = await User.findOne({where:{username:req.params.username}})
+    if (user){
+        res.send(true)
+    } else {
+        res.send(false)
+    }
 })
 
 app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of the User with ID
