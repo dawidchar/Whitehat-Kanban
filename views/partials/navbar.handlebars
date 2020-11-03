@@ -1,31 +1,55 @@
 <nav>
-    <a class="logo" href="/boards"><i class="fas fa-paperclip"></i>FLIMFLAM</a>
-    <a class="logout" href="/login">Log Out</a>
+        <a class="logo" href="/boards"><i style="display:inline;" class="fas fa-paperclip"></i>FLIMFLAM</a>
+    <div class="nav-buttons">
+        <a class="nav-button" href="/boards">All Boards</a>
+        <a class="nav-button" href="/myboards">My Boards</a>
+        <a class="logout" href="/login">Log Out</a>
+    </div>
 </nav>
 
 <style>
     nav {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
         width: 100%;
         height: auto;
-        box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.15);
         background-color: #8cc076;
         display: flex;
         align-items: center;
-        justify-content: space-between;
         padding: 8px 10px;
     } 
+    .nav-buttons {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+    .nav-button {
+        margin-right: 10px;
+    }
     .logo i {
         margin-right: 2px;
     }
     .logo {
         letter-spacing: 2px;
     }
-    .logo, .logout {
+    .logo, .logout, .nav-button {
         color: #fff;
         opacity: 0.85;
         font-weight: 900;
     }
+    .logout {
+        border: 2px solid #fff;
+        border-radius: 4px; 
+        padding: 2px 4px;
+    }
     .logo:hover {
+        color: #fff;
+        opacity: 1;
+        text-decoration: none;
+    }
+    .nav-button:hover {
         color: #fff;
         opacity: 1;
         text-decoration: none;
