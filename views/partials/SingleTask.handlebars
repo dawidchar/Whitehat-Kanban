@@ -1,4 +1,4 @@
-<li style="list-style-type:none; cursor:${(readonly) ? 'normal' : 'pointer'}" id="{{taskid}}" draggable="${(readonly) ? 'false' : 'true'}"
+<li class="grabbable" style="list-style-type:none; cursor:${(readonly) ? 'normal' : 'pointer'}" id="{{taskid}}" draggable="${(readonly) ? 'false' : 'true'}"
     ondragstart="app.run('dragStart', event)"
     ondrop="app.run('dropCollab', event)">
     <a data-toggle="modal" data-target="#taskedit-modal">

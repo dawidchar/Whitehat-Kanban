@@ -170,6 +170,7 @@
             document.querySelector("#readonlybanner").style.display = (readonly) ? "flex" : "none"
             $('.hidereadonly').each(function () { this.style.display = (readonly) ? "none" : "inline-block" })
             $('li').each(function () { this.style.cursor = (readonly) ? "normal" : "pointer" })
+
             return state
         }
     }
@@ -183,6 +184,21 @@
 <style>
     * {
         font-family: 'Nunito', sans-serif;
+    }
+
+    .grabbable {
+        cursor: move;
+        /* fallback if grab cursor is unsupported */
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+    }
+
+    /* (Optional) Apply a "closed-hand" cursor during drag operation. */
+    .grabbable:active {
+        cursor: grabbing !important;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
     }
 
     #boarddesc {
@@ -232,16 +248,19 @@
     }
 
     /* css for mobile goes here */
-@media screen and (min-width: 40em) {
-    /* css for mid screens goes here */
-    #app {
-        grid-template-columns: auto auto;
+    @media screen and (min-width: 40em) {
+
+        /* css for mid screens goes here */
+        #app {
+            grid-template-columns: auto auto;
+        }
     }
-}
-@media screen and (min-width: 60em) {
-    /* css for massive screens goes here */
-    #app {
-        grid-template-columns: auto auto auto;
+
+    @media screen and (min-width: 60em) {
+
+        /* css for massive screens goes here */
+        #app {
+            grid-template-columns: auto auto auto;
+        }
     }
-}
 </style>

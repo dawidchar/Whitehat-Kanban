@@ -1,3 +1,4 @@
 <div class="" style="width: 3.3rem; height:3.3rem;" data-toggle="tooltip" data-placement="bottom" title="{{name}}">
-    <div id="user-{{userid}}" draggable="${(readonly) ? 'false' : 'true'}" ondragstart="app.run('dragStart', event)" class="imageicon rounded-circle shadow" style="background-image:url('{{avatar}}');"></div>
+    <div id="user-{{userid}}" draggable="${(readonly) ? 'false' : 'true'}" ondragstart="app.run('dragStart', event)"
+        class="imageicon rounded-circle shadow ${(readonly) ? '' : 'grabbable'}" style="background-image:url('{{avatar}}');"></div>
 </div>
