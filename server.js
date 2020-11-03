@@ -228,6 +228,9 @@ app.post('/api/board/:id/removeuser/:userid', async (req, res) => { //Update Boa
         where: { id: req.params.userid }
     });
     if (user && board) {
+        Task.update({UserId: null}, {
+            where: { BoardId: req.params.id, UserId: req.params.userid}
+        })
         board.removeUser(user);
         res.send(true);
     } else {
