@@ -4,7 +4,6 @@
     font-family: 'Nunito', sans-serif;
     font-weight: 900;
 }
-
 .form {
     position: absolute;
     top: 50%;
@@ -14,7 +13,6 @@
     height: 25rem;
     text-align: center;
 }
-
 h2 {
     letter-spacing: 1px;
 }
@@ -39,7 +37,6 @@ input {
 input:focus {
     outline: none;
 }
-
 .loginbutton {
     text-align: center;
     background-color: #8cc076;
@@ -56,7 +53,6 @@ input:focus {
     color: #8cc076;
     text-decoration: underline;
 }
-
 .login-btn:hover {
     color: #8cc076;
     text-decoration: underline;
