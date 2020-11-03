@@ -116,7 +116,11 @@ app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of t
         },
         include: { model: Board, as: "boards", include: { model: User, as: "users" } }
     })
-    res.send(user.boards);
+    try {
+        res.send(user.boards);
+    } catch (error) {
+        res.send({})
+    }
 })
 
 app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
@@ -174,7 +178,7 @@ app.post('/api/boards', async (req, res) => { //Create New Board
 })
 
 
-app.get('/api/board/:id', async (req, res) => { //Get Board With ID
+app.get('/api/board/:id', restrictAccess, async (req, res) => { //Get Board With ID
     let board = await Board.findOne({
         where: { id: req.params.id },
         include: { model: User, as: "users" }
@@ -182,7 +186,7 @@ app.get('/api/board/:id', async (req, res) => { //Get Board With ID
     res.send(board)
 })
 
-app.post('/api/board/:id', async (req, res) => { //Update Board with that ID
+app.post('/api/board/:id', restrictAccess, async (req, res) => { //Update Board with that ID
     let result = false;
     if (req.body.title) {
         await Board.update({ title: req.body.title }, {
@@ -205,7 +209,7 @@ app.post('/api/board/:id', async (req, res) => { //Update Board with that ID
     res.send(result)
 })
 
-app.post('/api/board/:id/adduser/:userid', async (req, res) => { //Update Board -- Add User
+app.post('/api/board/:id/adduser/:userid', restrictAccess, async (req, res) => { //Update Board -- Add User
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
@@ -220,7 +224,7 @@ app.post('/api/board/:id/adduser/:userid', async (req, res) => { //Update Board 
     }
 })
 
-app.post('/api/board/:id/removeuser/:userid', async (req, res) => { //Update Board -- Remove User
+app.post('/api/board/:id/removeuser/:userid', restrictAccess, async (req, res) => { //Update Board -- Remove User
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
@@ -242,7 +246,7 @@ app.post('/api/board/:id/removeuser/:userid', async (req, res) => { //Update Boa
 //     res.send(true)
 // })
 
-app.post('/api/board/:id/delete', async (req, res) => { //Delete Board With that ID
+app.post('/api/board/:id/delete', restrictAccess, async (req, res) => { //Delete Board With that ID
     await Board.destroy({
         where: { id: req.params.id }
     });
@@ -251,7 +255,7 @@ app.post('/api/board/:id/delete', async (req, res) => { //Delete Board With that
 
 //// Tasks
 
-app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Board With that Board ID
+app.get('/api/board/:id/tasks', restrictAccess, async (req, res) => { // Get Tasks From the Board With that Board ID
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
@@ -259,7 +263,7 @@ app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Boar
     res.send(tasks);
 })
 
-app.post('/api/board/:id/tasks', async (req, res) => {// Create a New Task For the Board with that Board ID
+app.post('/api/board/:id/tasks', restrictAccess, async (req, res) => {// Create a New Task For the Board with that Board ID
     const task = await Task.create({ name: req.body.name, state: 0 })
     let id = req.params.id;
     let board = await Board.findOne({
@@ -340,6 +344,24 @@ app.post('/api/task/:taskid/delete', async (req, res) => { // Delete Task With t
     res.send()
 })
 
+async function restrictAccess(req, res, next) {
+    let board = await Board.findOne({
+        where: { id: req.params.id },
+        include: { model: User, as: "users" }
+    });
+    var present = false;
+    for (let i = 0; i < board.users.length; i++) {
+        if (board.users[i].id == req.cookies.userid) {
+            present = true;
+        }
+    }
+    if (present) {
+        next();
+    } else {
+        console.log('failed');
+        res.send(false);
+    }
+}
 
 app.listen(3000, () => {
     sequelize.sync();
