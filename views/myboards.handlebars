@@ -150,7 +150,7 @@
         redirect: 'follow'
         };
 
-        await fetch("http://localhost:3000/api/boards", requestOptions)
+        await fetch("/api/boards", requestOptions)
         .then(response => response.text())
         .then(result => {
             console.log(result)
