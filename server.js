@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.use(function (req, res, next) {
-    if (req.url == '/' || req.url.includes('api') ) { //(req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) || (req.url.method == "POST" && req.url == '/api/users') 
+    if (req.url == '/' || req.url.includes('api')) { //(req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) || (req.url.method == "POST" && req.url == '/api/users') 
     } else {
         if (!req.cookies.userid) {
             res.redirect('/')
@@ -74,7 +74,7 @@ app.post('/api/users', async (req, res) => { // Create New User (Must have usern
     let user = {}
     try {
         user = await User.create(req.body)
-        res.cookie('userid', user.id, {maxAge: 3600000 * 24 * 2 })
+        res.cookie('userid', user.id, { maxAge: 3600000 * 24 * 2 })
         res.cookie('user-name', user.name)
     } catch (error) {
         console.log('Create User Error', error)
@@ -137,8 +137,8 @@ app.post('/api/users/:userid', userAccess, async (req, res) => { // Update User 
         res.send(true)
     }
     if (req.body.username) {
-        if (await User.findOne({where:{username:req.body.username}})) {
-            res.send({error:'Username Taken'})
+        if (await User.findOne({ where: { username: req.body.username } })) {
+            res.send({ error: 'Username Taken' })
         } else {
             await User.update({ avatar: req.body.username }, {
                 where: { id: req.params.userid }
@@ -327,12 +327,15 @@ app.post('/api/task/:taskid/assign/:userid', async (req, res) => {// Update the 
 
 app.post('/api/task/:taskid/unassign', async (req, res) => {// Update the task to unassign an user from it
     const task = await Task.findByPk(req.params.taskid)
-    const user = await task.getUser()
-    if (task && user) {
-        console.log(task)
-        await user.removeTask(task)
-        res.send(true)
-    }else{
+    if (task) {
+        const user = await task.getUser()
+        if (user) {
+            await user.removeTask(task)
+            res.send(true)
+        } else {
+            res.send(false)
+        }
+    } else {
         res.send(false)
     }
 })
