@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="form-group postition-relative">
                         <label class="col-form-label">Username:</label>
-                        <input id="collab-user" class="form-control" type="text" placeholder="Username"></input>
+                        <input id="collab-user" class="form-control" type="text" placeholder="Username" required></input>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -35,7 +35,7 @@
         e.preventDefault()
         const collabuser = $('#collab-user').val()
         const reqexists = await fetch(`/api/users/${collabuser}/exists`)
-        const userdata = await reqresult.json()
+        const userdata = await reqexists.json()
         if (userdata) {
             const postRequest = {
                 method: 'POST',
@@ -43,10 +43,11 @@
                     'Content-Type': 'application/json'
                 }
             }
-            await fetch(`/api/board/${boardid}`, postRequest).then(() => app.run('getBoard'))
+            await fetch(`/api/board/${boardid}/adduser/${userdata.id}`, postRequest).then(() => app.run('getBoard'))
         } else {
             alert("User Does Not Exists")
         }
+        $('#addcollab-modal').modal('hide')
         return false
     }
     getAllUsers()
