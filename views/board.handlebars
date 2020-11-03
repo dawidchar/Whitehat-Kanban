@@ -1,4 +1,7 @@
-<div id="readonlybanner" class="mx-auto text-center text-white bg-info align-items-center justify-content-center" style="height:2rem; display:none;"><p class="p-0 m-0 font-weight-bold">Read Only Access</p></div>
+<div id="readonlybanner" class="mx-auto text-center text-white bg-info align-items-center justify-content-center"
+    style="height:2rem; display:none;">
+    <p class="p-0 m-0 font-weight-bold">Read Only Access</p>
+</div>
 <div class="boardtitle-container text-center position-relative">
     <h1 id="boardtitle" style="display:inline">Board Name</h1>
     <a class="position-absolute pl-2" style="top:25%;cursor:pointer;" data-toggle="modal"
@@ -20,7 +23,8 @@
                 class="fas fa-plus hidereadonly"></i></a>
         <div id="collabapp"></div>
     </div>
-    <button type="button" class="hidereadonly btn btn-success mb-3 mt-5 mx-auto" data-toggle="modal" data-target="#addtask-modal">
+    <button type="button" class="hidereadonly btn btn-success mb-3 mt-5 mx-auto" data-toggle="modal"
+        data-target="#addtask-modal">
         Add Task ✔
     </button>
     <div class="d-flex flex-row flex-wrap justify-content-around" id="app"> </div>
@@ -61,35 +65,35 @@
             return state
         },
         dropDelete: (state, event) => {
-            if(event.preventDefault) { event.preventDefault(); }
-            if(event.stopPropagation) { event.stopPropagation(); }
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             const userid = event.dataTransfer.getData('text').split("-")[1]
             console.log("dropped", id)
-            if(id.includes("user")){
-            const postRequest = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+            if (id.includes("user")) {
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }
-            }
-            fetch(`/api/board/${boardid}/removeuser/${userid}`, postRequest).then(() => {app.run('getBoard');app.run('getTasks')})
+                fetch(`/api/board/${boardid}/removeuser/${userid}`, postRequest).then(() => { app.run('getBoard'); app.run('getTasks') })
             } else {
-            const index = state.tasks.findIndex(task => task.id == id)
-            state.tasks.splice(index, 1)
-            const postRequest = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+                const index = state.tasks.findIndex(task => task.id == id)
+                state.tasks.splice(index, 1)
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }
-            }
-            fetch(`/api/task/${id}/delete`, postRequest).then(() => app.run('getTasks'))
+                fetch(`/api/task/${id}/delete`, postRequest).then(() => app.run('getTasks'))
             }
             return state
         },
         dropToDo: (state, event) => {
-            if(event.preventDefault) { event.preventDefault(); }
-            if(event.stopPropagation) { event.stopPropagation(); }
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //  { { !-- const task = state.tasks.find(task => task.id == id)-- } }
             // { { !--task.state == 0 -- } }
@@ -100,12 +104,12 @@
                 },
                 body: JSON.stringify({ state: 0 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' +err));
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' + err));
             return state
         },
         dropInProgress: (state, event) => {
-            if(event.preventDefault) { event.preventDefault(); }
-            if(event.stopPropagation) { event.stopPropagation(); }
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //{ { !-- const task = state.tasks.find(task => task.id == id)-- } }
             //{ { !--task.state == 1 -- } }
@@ -116,12 +120,12 @@
                 },
                 body: JSON.stringify({ state: 1 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' +err));
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' + err));
             return state
         },
         dropDone: (state, event) => {
-            if(event.preventDefault) { event.preventDefault(); }
-            if(event.stopPropagation) { event.stopPropagation(); }
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //   { { !-- const task = state.tasks.find(task => task.id == id)-- } }
             //   { { !--task.state == 2 -- } }
@@ -132,10 +136,12 @@
                 },
                 body: JSON.stringify({ state: 2 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' +err));
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' + err));
             return state
         },
         dropCollab: (state, event) => {
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const userid = event.dataTransfer.getData('text').split("-")[1]
             const taskid = $(event.target).parent().parent().parent().attr('id')
             const postRequest = {
@@ -145,7 +151,7 @@
                 }
             }
             fetch(`/api/task/${taskid}/assign/${userid}`, postRequest).then(() => app.run('getTasks'))
-            return state 
+            return state
         }
     };
     const boardUpdate = {
@@ -159,8 +165,8 @@
             document.querySelector("#boardtitle").innerText = state.board.title
             document.querySelector("#boarddesc").innerText = state.board.desc
             document.querySelector("#readonlybanner").style.display = (readonly) ? "flex" : "none"
-            $('.hidereadonly').each(function() {this.style.display = (readonly) ? "none" : "inline-block"})
-            $('li').each(function() {this.style.cursor = (readonly) ? "normal" : "pointer"})
+            $('.hidereadonly').each(function () { this.style.display = (readonly) ? "none" : "inline-block" })
+            $('li').each(function () { this.style.cursor = (readonly) ? "normal" : "pointer" })
             return state
         }
     }
