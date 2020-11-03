@@ -3,9 +3,16 @@
     <div class="nav-buttons">
         <a class="nav-button" href="/boards">All Boards</a>
         <a class="nav-button" href="/myboards">My Boards</a>
-        <a class="logout" href="/login">Log Out</a>
+        <a class="logout" onclick='logoutbutton()'>Log Out</a>
     </div>
 </nav>
+
+<script>
+    function logoutbutton() {
+        document.cookie.split(";").forEach(function (c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+        window.location.replace("/")
+    }
+</script>
 
 <style>
     nav {
@@ -31,9 +38,11 @@
     .logo i {
         margin-right: 2px;
     }
+
     .logo {
         letter-spacing: 2px;
     }
+
     .logo, .logout, .nav-button {
         color: #fff;
         opacity: 0.85;

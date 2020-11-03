@@ -1,8 +1,17 @@
-<h1>My Boards</h1>
- <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+<center>
+<h1>Your Boards</h1>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">+ Add Board</button>
+</center>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
 <style>
     body {
     background-color: #8896AB;
+    }
+    .imageicon {
+        background-position: center;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
     }
     .main-grid {
         margin: 1rem;
@@ -64,6 +73,40 @@
 <div id="app-container">
 <div id="app" />
 </div>
+
+<div class="modal fade" id="addBoardModal" tabindex="-1" role="dialog" aria-labelledby="addBoardModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addBoardModalLabel">Add Board</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <label for="formName">Board Name</label>
+                <input type="text" class="form-control" id="formName" required>
+            </div>
+            <div class="form-group">
+                <label for="formDesc">Board Description</label>
+                <input type="text" class="form-control" id="formDesc" required>
+            </div>
+            <div class="form-group">
+                <label for="formImage">Board Image</label>
+                <input type="text" class="form-control" id="formImage" required>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="newBoard()">Add Board</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
     const userid = getCookie("userid")
     const state = {
@@ -78,11 +121,34 @@
             return state;
         },
         removeHiddenDivs: (state) => {
-            document.getElementById('toBeDeleted').remove()
+            document.getElementsByClassName('toBeDeleted').remove()
             return state;
         }
     }
     app.start("app", state, view, update)
     app.run('populate')
 
+
+    async function newBoard() {
+        var rawJSON = {"title": document.getElementById('formName').value, "userid": userid, "desc": document.getElementById('formDesc').value, "image": document.getElementById('formImage').value}
+        console.log(rawJSON)
+        var requestOptions = {
+        method: 'POST',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(rawJSON),
+        redirect: 'follow'
+        };
+
+        await fetch("http://localhost:3000/api/boards", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            console.log(result)
+            app.run('populate');
+            $('#addBoardModal').modal('hide')
+        })
+        .catch(error => console.log('error', error));
+    }
 </script>

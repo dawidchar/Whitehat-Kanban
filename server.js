@@ -110,9 +110,13 @@ app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
 })
 
 app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of the User with ID
-    const user = await User.findByPk(req.params.userid)
-    const boards = await user.getBoards()
-    res.send(boards)
+    const user = await User.findOne({
+        where: {
+            id: req.params.userid
+        },
+        include: { model: Board, as: "boards", include: { model: User, as: "users" } }
+    })
+    res.send(user.boards);
 })
 
 app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
@@ -313,6 +317,18 @@ app.post('/api/task/:taskid/assign/:userid', async (req, res) => {// Update the 
         await task.setUser(user)
         res.send(true)
     } else {
+        res.send(false)
+    }
+})
+
+app.post('/api/task/:taskid/unassign', async (req, res) => {// Update the task to unassign an user from it
+    const task = await Task.findByPk(req.params.taskid)
+    const user = await task.getUser()
+    if (task && user) {
+        console.log(task)
+        await user.removeTask(task)
+        res.send(true)
+    }else{
         res.send(false)
     }
 })
