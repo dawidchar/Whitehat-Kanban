@@ -1,32 +1,38 @@
-<div class="boardtitle-container text-center">
+<div class="boardtitle-container text-center position-relative">
     <h1 id="boardtitle" style="display:inline">Board Name</h1>
-    &nbsp;<a href=""><i style="color:lightgray; font-size: 28px;" class="fas fa-edit"></i></a>
+    <a class="position-absolute pl-2" style="top:25%;cursor:pointer;" data-toggle="modal"
+        data-target="#boardedit-modal">
+        <i style="color:lightgray; font-size: 28px;" class="fas fa-edit"></i>
+    </a>
 </div>
 <h5 id="boarddesc" class="text-center font-weight-light"></h5>
 
+{{> modal-edittask}}
+{{> modal-editboard}}
+{{> modal-addcollab}}
+{{> modal-addtask}}
 
 <div class="mx-auto p-5 d-flex justify-content-center flex-column text-center" style="width:95%">
-    <div class="collab-container shadow mb-5">
+    <div class="collab-container shadow">
         <h5 class="text-center font-weight-light" style="display:inline;">Collabarators</h5>&nbsp;
-        <a href="" style="color: black;"><i class="fas fa-plus"></i></a>
+        <a style="color: black; cursor:pointer;" data-toggle="modal" data-target="#addcollab-modal"><i
+                class="fas fa-plus"></i></a>
         <div id="collabapp"></div>
     </div>
-        <div class="trashicon-container rounded-circle shadow p-4 mx-auto"
-        style="margin-bottom:2rem; width:7rem; height:7rem; cursor:pointer;">
-        <div class="imageicon"
-            style="background-image: url('https://icons-for-free.com/iconfiles/png/512/add+48px-131985189471868692.png');">
-        </div>
-    </div>
+    <button type="button" class="btn btn-success mb-3 mt-5 mx-auto" data-toggle="modal" data-target="#addtask-modal">
+        Add Task ✔
+    </button>
     <div class="d-flex flex-row flex-wrap justify-content-around" id="app"> </div>
     <div class="trashicon-container rounded-circle shadow p-4 mx-auto"
-        style="margin-top:2rem; width:7rem; height:7rem; cursor:pointer;"
-        ondragover="event.preventDefault()"
+        style="margin-top:2rem; width:7rem; height:7rem; cursor:pointer;" ondragover="event.preventDefault()"
         ondrop="app.run('dropDelete', event)">
         <div class="imageicon"
             style="background-image: url('https://icons-for-free.com/iconfiles/png/512/delete+remove+trash+trash+bin+trash+can+icon-1320073117929397588.png');">
         </div>
     </div>
 </div>
+
+<script src="/modalevents.js"></script>
 
 <script>
     const boardid = window.location.pathname.split('/')[2]
@@ -57,53 +63,53 @@
             state.tasks.splice(index, 1)
             console.log("dropped", id)
             const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
-        }
             fetch(`/api/task/${id}/delete`, postRequest).then(() => app.run('getTasks'))
             return state
         },
         dropToDo: (state, event) => {
             const id = event.dataTransfer.getData('text')
-            {{!-- const task = state.tasks.find(task => task.id == id) --}}
-            {{!-- task.state == 0 --}}
+            //  { { !-- const task = state.tasks.find(task => task.id == id)-- } }
+            // { { !--task.state == 0 -- } }
             const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({state: 0})
-        }
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ state: 0 })
+            }
             fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
             return state
         },
         dropInProgress: (state, event) => {
             const id = event.dataTransfer.getData('text')
-            {{!-- const task = state.tasks.find(task => task.id == id) --}}
-            {{!-- task.state == 1 --}}
+            //{ { !-- const task = state.tasks.find(task => task.id == id)-- } }
+            //{ { !--task.state == 1 -- } }
             const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({state: 1})
-        }
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ state: 1 })
+            }
             fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
             return state
         },
         dropDone: (state, event) => {
             const id = event.dataTransfer.getData('text')
-            {{!-- const task = state.tasks.find(task => task.id == id) --}}
-            {{!-- task.state == 2 --}}
+            //   { { !-- const task = state.tasks.find(task => task.id == id)-- } }
+            //   { { !--task.state == 2 -- } }
             const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({state: 2})
-        }
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ state: 2 })
+            }
             fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
             return state
         }

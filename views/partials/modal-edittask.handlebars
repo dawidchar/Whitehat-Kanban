@@ -1,0 +1,44 @@
+<div class="modal fade" id="taskedit-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title">Edit</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form onsubmit="return updateTask(event)">
+                <input type="hidden" id="task-id"></input>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Task</label>
+                        <input name="name" type="text" class="form-control" id="task-name" required></input>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function updateTask(e) {
+        e.preventDefault()
+        const taskid = $('#task-id').val()
+        const taskname = $('#task-name').val()
+        const postRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: taskname })
+        }
+        await fetch(`/api/task/${taskid}`, postRequest).then(() => app.run('getTasks'))
+        $('#taskedit-modal').modal('hide')
+        return false
+    }
+
+</script>

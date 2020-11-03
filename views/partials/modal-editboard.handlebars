@@ -1,0 +1,60 @@
+<div class="modal fade" id="boardedit-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title">Edit</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form onsubmit="return updateBoard(event)">
+                <input type="hidden" id="board-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Title:</label>
+                        <input name="name" type="text" class="form-control" id="board-title"></input>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Description:</label>
+                        <input name="description" type="text" class="form-control" id="board-description"></input>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal" onclick="deleteBoard()">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Board</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function updateBoard(e) {
+        e.preventDefault()
+        const boardid = $('#board-id').val()
+        const boardtitle = $('#board-title').val()
+        const boarddesc = $('#board-description').val()
+        const postRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: boardtitle, desc: boarddesc })
+        }
+        await fetch(`/api/board/${boardid}`, postRequest).then(() => app.run('getBoard'))
+
+        $('#boardedit-modal').modal('hide')
+        return false
+    }
+    function deleteBoard() {
+        const boardid = $('#board-id').val()
+        const postRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        fetch(`/api/board/${boardid}/delete`, postRequest).then(() => window.location.replace('/myboards'))
+    }
+</script>
