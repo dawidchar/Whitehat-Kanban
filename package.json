@@ -4,7 +4,6 @@
   "description": "Our new and amazing Kanban Board ",
   "main": "index.js",
   "scripts": {
-    "start": "npm start",
     "dev": "NODE_ENV=dev PORT=3000 nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
