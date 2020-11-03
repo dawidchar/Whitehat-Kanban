@@ -178,7 +178,7 @@ app.post('/api/boards', async (req, res) => { //Create New Board
 })
 
 
-app.get('/api/board/:id', restrictAccess, async (req, res) => { //Get Board With ID
+app.get('/api/board/:id', async (req, res) => { //Get Board With ID
     let board = await Board.findOne({
         where: { id: req.params.id },
         include: { model: User, as: "users" }
@@ -255,7 +255,7 @@ app.post('/api/board/:id/delete', restrictAccess, async (req, res) => { //Delete
 
 //// Tasks
 
-app.get('/api/board/:id/tasks', restrictAccess, async (req, res) => { // Get Tasks From the Board With that Board ID
+app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Board With that Board ID
     let board = await Board.findOne({
         where: { id: req.params.id }
     });

@@ -43,9 +43,6 @@
             body: JSON.stringify({ title: boardtitle, desc: boarddesc })
         }
         await fetch(`/api/board/${boardid}`, postRequest).then(res => {
-            if (res == false) {
-                alert('Failed! Do you have permission?')
-            }
             console.log(res)
             app.run('getBoard')
         })

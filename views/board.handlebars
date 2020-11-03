@@ -49,9 +49,6 @@
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             })
-            if (state.tasks.length == 0) {
-                alert('Failed! Do you have Access?');
-            }
             return state
         },
         dragStart: (state, event) => {
