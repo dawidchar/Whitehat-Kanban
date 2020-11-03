@@ -27,7 +27,7 @@ input {
     border: none;
     color: darkslategray;
 }
-.input-field, .btn {
+.input-field, .loginbutton {
     border: 1px solid lightgray;
     border-radius: 4px;
     text-align: left;
@@ -39,12 +39,12 @@ input:focus {
     outline: none;
 }
 
-.btn {
+.loginbutton {
     text-align: center;
     background-color: #8cc076;
     color: #ffffff;
 }
-.btn:hover {
+.loginbutton:hover {
     filter: brightness(105%);
     color: #fff;
 }
