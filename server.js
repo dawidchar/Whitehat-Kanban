@@ -228,6 +228,10 @@ app.post('/api/board/:id/removeuser/:userid', restrictAccess, async (req, res) =
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
+    if (Object.keys(await board.getUsers()).length == 1){
+        res.send({error:'There has to be at least 1 Collabarator'})
+        return
+    }
     let user = await User.findOne({
         where: { id: req.params.userid }
     });
@@ -364,7 +368,7 @@ async function restrictAccess(req, res, next) {
     if (present) {
         next();
     } else {
-        console.log('failed');
+        console.log('Access Denied');
         res.send(false);
     }
 }
