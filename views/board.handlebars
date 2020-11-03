@@ -1,8 +1,9 @@
+<div id="readonlybanner" class="mx-auto text-center text-white bg-info align-items-center justify-content-center" style="height:2rem; display:none;"><p class="p-0 m-0 font-weight-bold">Read Only Access</p></div>
 <div class="boardtitle-container text-center position-relative">
     <h1 id="boardtitle" style="display:inline">Board Name</h1>
     <a class="position-absolute pl-2" style="top:25%;cursor:pointer;" data-toggle="modal"
         data-target="#boardedit-modal">
-        <i style="color:lightgray; font-size: 28px;" class="fas fa-edit"></i>
+        <i style="color:lightgray; font-size: 28px;" class="fas fa-edit hidereadonly"></i>
     </a>
 </div>
 <h5 id="boarddesc" class="text-center font-weight-light"></h5>
@@ -13,17 +14,17 @@
 {{> modal-addtask}}
 
 <div class="mx-auto p-5 d-flex justify-content-center flex-column text-center" style="width:95%">
-    <div class="collab-container shadow">
+    <div class="collab-container shadow mb-3">
         <h5 class="text-center font-weight-light" style="display:inline;">Collabarators</h5>&nbsp;
         <a style="color: black; cursor:pointer;" data-toggle="modal" data-target="#addcollab-modal"><i
-                class="fas fa-plus"></i></a>
+                class="fas fa-plus hidereadonly"></i></a>
         <div id="collabapp"></div>
     </div>
-    <button type="button" class="btn btn-success mb-3 mt-5 mx-auto" data-toggle="modal" data-target="#addtask-modal">
+    <button type="button" class="hidereadonly btn btn-success mb-3 mt-5 mx-auto" data-toggle="modal" data-target="#addtask-modal">
         Add Task ✔
     </button>
     <div class="d-flex flex-row flex-wrap justify-content-around" id="app"> </div>
-    <div class="trashicon-container rounded-circle shadow p-4 mx-auto"
+    <div class="hidereadonly trashicon-container rounded-circle shadow p-4 mx-auto"
         style="margin-top:2rem; width:7rem; height:7rem; cursor:pointer;" ondragover="event.preventDefault()"
         ondrop="app.run('dropDelete', event)">
         <div class="imageicon"
@@ -36,6 +37,8 @@
 
 <script>
     const boardid = window.location.pathname.split('/')[2]
+    const userid = getCookie("userid")
+    let readonly = false;
     const state = {
         tasks: [],
         board: {}
@@ -152,8 +155,12 @@
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             })
+            readonly = (state.board.users.find(user => user.id == userid)) ? false : true
             document.querySelector("#boardtitle").innerText = state.board.title
             document.querySelector("#boarddesc").innerText = state.board.desc
+            document.querySelector("#readonlybanner").style.display = (readonly) ? "flex" : "none"
+            $('.hidereadonly').each(function() {this.style.display = (readonly) ? "none" : "inline-block"})
+            $('li').each(function() {this.style.cursor = (readonly) ? "normal" : "pointer"})
             return state
         }
     }
