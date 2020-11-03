@@ -84,7 +84,7 @@ app.post('/api/users', async (req, res) => { // Create New User (Must have usern
 })
 
 
-app.get('/api/users/:userid', async (req, res) => { //Get User with ID
+app.get('/api/users/:userid', userAccess, async (req, res) => { //Get User with ID
     const user = await User.findByPk(req.params.userid)
     res.send(user)
 })
@@ -109,7 +109,7 @@ app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
     }
 })
 
-app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of the User with ID
+app.get('/api/users/:userid/boards', userAccess, async (req, res) => { //Get the Boards of the User with ID
     const user = await User.findOne({
         where: {
             id: req.params.userid
@@ -123,7 +123,7 @@ app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of t
     }
 })
 
-app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
+app.post('/api/users/:userid', userAccess, async (req, res) => { // Update User with that ID
     if (req.body.name) {
         await User.update({ name: req.body.name }, {
             where: { id: req.params.userid }
@@ -148,7 +148,7 @@ app.post('/api/users/:userid', async (req, res) => { // Update User with that ID
     }
 })
 
-app.post('/api/users/:userid/delete', async (req, res) => { // Delete User With That ID
+app.post('/api/users/:userid/delete', userAccess, async (req, res) => { // Delete User With That ID
     await User.destroy({
         where: { id: req.params.userid }
     })
@@ -359,6 +359,14 @@ async function restrictAccess(req, res, next) {
         next();
     } else {
         console.log('failed');
+        res.send(false);
+    }
+}
+
+async function userAccess(req, res, next) {
+    if (req.params.userid == req.cookies.userid) {
+        next();
+    } else {
         res.send(false);
     }
 }
