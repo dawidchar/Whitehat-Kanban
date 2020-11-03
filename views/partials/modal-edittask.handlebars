@@ -16,6 +16,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal"
+                        onclick="delcollab()">Delete Collabarator</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Update Task</button>
                 </div>
@@ -39,6 +41,17 @@
         await fetch(`/api/task/${taskid}`, postRequest).then(() => app.run('getTasks'))
         $('#taskedit-modal').modal('hide')
         return false
+    }
+
+    async function delcollab() {
+        const taskid = $('#task-id').val()
+        const postRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }
+        await fetch(`/api/task/${taskid}/unassign`, postRequest).then(() => app.run('getTasks'))
     }
 
 </script>
