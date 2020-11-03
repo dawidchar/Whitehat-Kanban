@@ -16,3 +16,9 @@ $('#boardedit-modal').on('show.bs.modal', function (event) {
     $('#board-title').val(boardname)
     $('#board-description').val(boarddesc)
 })
+
+
+$('#addtask-modal').on('show.bs.modal', function (event) {
+    var modal = $(this)
+    modal.find('#taskname').val("")
+})

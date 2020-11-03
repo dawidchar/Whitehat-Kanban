@@ -7,16 +7,16 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form onsubmit="return updateTask(event)">
+            <form autocomplete="off" onsubmit="return addTask(event)">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label">Task:</label>
-                        <input name="name" type="select" class="form-control" id="collab-user"></input>
+                        <input name="name" type="select" class="form-control" id="taskname" required></input>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Update Task</button>
+                    <button type="submit" class="btn btn-primary">Add Task</button>
                 </div>
             </form>
         </div>
@@ -24,11 +24,21 @@
 </div>
 
 <script>
-   async function addCollab(e){
-       e.preventDefault()
-       const collabid = $('#collab-user').val().split(' ')[0]
-
-
-       return false
-   }
+    async function addTask(e) {
+        e.preventDefault()
+        console.log('ADD TASK')
+        const taskname = $('#taskname').val()
+        const boardid = window.location.pathname.split('/')[2]
+        const postRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: taskname })
+        }
+        await fetch(`/api/board/${boardid}/tasks`, postRequest).then(() => app.run('getTasks'))
+        // console.log(`/api/board/${boardid}/tasks`, postRequest)
+        $('#addtask-modal').modal('hide')
+        return false
+    }
 </script>
