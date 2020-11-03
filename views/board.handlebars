@@ -58,6 +58,8 @@
             return state
         },
         dropDelete: (state, event) => {
+            if(event.preventDefault) { event.preventDefault(); }
+            if(event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             const index = state.tasks.findIndex(task => task.id == id)
             state.tasks.splice(index, 1)
@@ -72,6 +74,8 @@
             return state
         },
         dropToDo: (state, event) => {
+            if(event.preventDefault) { event.preventDefault(); }
+            if(event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //  { { !-- const task = state.tasks.find(task => task.id == id)-- } }
             // { { !--task.state == 0 -- } }
@@ -82,10 +86,12 @@
                 },
                 body: JSON.stringify({ state: 0 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' +err));
             return state
         },
         dropInProgress: (state, event) => {
+            if(event.preventDefault) { event.preventDefault(); }
+            if(event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //{ { !-- const task = state.tasks.find(task => task.id == id)-- } }
             //{ { !--task.state == 1 -- } }
@@ -96,10 +102,12 @@
                 },
                 body: JSON.stringify({ state: 1 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' +err));
             return state
         },
         dropDone: (state, event) => {
+            if(event.preventDefault) { event.preventDefault(); }
+            if(event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //   { { !-- const task = state.tasks.find(task => task.id == id)-- } }
             //   { { !--task.state == 2 -- } }
@@ -110,7 +118,7 @@
                 },
                 body: JSON.stringify({ state: 2 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' +err));
             return state
         }
     };
