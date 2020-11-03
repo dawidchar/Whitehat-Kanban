@@ -317,6 +317,18 @@ app.post('/api/task/:taskid/assign/:userid', async (req, res) => {// Update the 
     }
 })
 
+app.post('/api/task/:taskid/unassign', async (req, res) => {// Update the task to unassign an user from it
+    const task = await Task.findByPk(req.params.taskid)
+    const user = await task.getUser()
+    if (task && user) {
+        console.log(task)
+        await user.removeTask(task)
+        res.send(true)
+    }else{
+        res.send(false)
+    }
+})
+
 app.post('/api/task/:taskid/delete', async (req, res) => { // Delete Task With that Task ID
     await Task.destroy({
         where: { id: req.params.taskid }
