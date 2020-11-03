@@ -385,7 +385,7 @@ async function userAccess(req, res, next) {
     }
 }
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
     sequelize.sync();
     console.log('web server running on port 3000')
 })
