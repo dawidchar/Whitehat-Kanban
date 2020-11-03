@@ -3,6 +3,20 @@
     <a href="/board/${board.id}">
     <article style="background-image: url(${board.image});">
         <div class="board-info"><span style="top:40%;position:relative;">${board.desc}</span></div>
+       <div>
+            <div>
+            ${board.users.map(user => `
+            <div class="" style="width: 3.3rem; height:3.3rem; position: absolute; right: ${state.userImageRight}px; z-index: ${state.userImageIndex}" >
+                <div class="imageicon rounded-circle shadow" style="background-image:url('${user.avatar}');"></div>
+            </div>
+            <div class="toBeDeleted" style="visibility: hidden; width: 0; height: 0;">
+            ${state.userImageRight = state.userImageRight + 20}
+            ${state.userImageIndex = state.userImageIndex - 1}
+            ${(state.userImageIndex + board.users.length == 100) ? `${state.userImageIndex = 100} ${state.userImageRight = 0}` : ''}
+            </div>
+            `).join(' ')}
+            </div>
+        </div>
         <h2>${board.title}</h2>
     </article>`).join(' ')}
     </a>
