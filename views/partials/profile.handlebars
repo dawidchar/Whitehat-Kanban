@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="user-image" style="background-image: url('${state.user.avatar}');"></div>
+    <div>
+    <h1>Welcome, ${state.user.name}</h1>
+    <h4>Better Known as ${state.user.username}</h4>
+    </div>
+    <div>
+        <form>
+            <div class="form-group">
+                <label for="formName">Update Name</label>
+                <input type="text" class="form-control" id="formName" required>
+            </div>
+            <div class="form-group">
+                <label for="formImage">Update Image</label>
+                <input type="text" class="form-control" id="formImage" required>
+            </div>
+            <small>Tip: Enter your new name/image then hit enter!</small>
+        </form>
+    </div>
+</div>

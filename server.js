@@ -39,6 +39,10 @@ app.get('/', (req, res) => { //Login Page
     res.render('login', { layout: 'home' })
 })
 
+app.get('/profile', (req, res) => { //All Boards Page
+    res.render('profile')
+})
+
 app.get('/boards', (req, res) => { //All Boards Page
     res.render('boards')
 })
