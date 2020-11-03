@@ -2,7 +2,7 @@
     ondragstart="app.run('dragStart', event)"
     ondrop="app.run('dropCollab', event)">
     <a data-toggle="modal" data-target="#taskedit-modal">
-        <div class="position-relative d-flex align-items-center" ondrop="app.run('dropCollab', event, 2)">
+        <div class="position-relative d-flex align-items-center" ondrop="app.run('dropCollab', event)">
             <h4 id="taskname" class="font-weight-light">{{taskname}}</h4>
             ${(task.User) ? `<div class="mb-1 mr-4 ml-auto" style="width: 1.8rem; height:1.8rem;">
                 <div class="imageicon rounded-circle shadow" style="background-image:url('{{useravatar}}');"
