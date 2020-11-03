@@ -1,10 +1,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 
+
+<div id="readonlybanner" class="mx-auto text-center text-white bg-info align-items-center justify-content-center"
+    style="height:2rem; display:none;">
+    <p class="p-0 m-0 font-weight-bold">Read Only Access</p>
+</div>
 <div class="boardtitle-container text-center position-relative mt-2">
     <h1 id="boardtitle" style="display:inline">Board Name</h1>
     <a class="position-absolute pl-2" style="top:25%;cursor:pointer;" data-toggle="modal"
         data-target="#boardedit-modal">
-        <i style="color:lightgray; font-size: 28px;" class="fas fa-edit"></i>
+        <i style="color:lightgray; font-size: 28px;" class="fas fa-edit hidereadonly"></i>
     </a>
 </div>
 <h5 id="boarddesc" class="text-center font-weight-light mt-1"></h5>
@@ -15,17 +20,18 @@
 {{> modal-addtask}}
 
 <div class="mx-auto p-5 d-flex justify-content-center flex-column text-center" style="width:95%">
-    <div class="collab-container shadow pt-1">
+    <div class="collab-container shadow mb-3">
         <h5 class="text-center font-weight-light" style="display:inline;">Collabarators</h5>&nbsp;
         <a style="color: black; cursor:pointer;" data-toggle="modal" data-target="#addcollab-modal"><i
-                class="fas fa-plus"></i></a>
+                class="fas fa-plus hidereadonly"></i></a>
         <div id="collabapp"></div>
     </div>
-    <button type="button" class="addtask-btn btn m-4 mx-auto" data-toggle="modal" data-target="#addtask-modal">
-        Add Task
+    <button type="button" class="hidereadonly addtask-btn btn m-4 mx-auto" data-toggle="modal"
+        data-target="#addtask-modal">
+        Add Task ✔
     </button>
     <div class="d-flex flex-row flex-wrap justify-content-around" id="app"> </div>
-    <div class="trashicon-container rounded-circle shadow p-4 mx-auto"
+    <div class="hidereadonly trashicon-container rounded-circle shadow p-4 mx-auto"
         style="margin-top:2rem; width:7rem; height:7rem; cursor:pointer;" ondragover="event.preventDefault()"
         ondrop="app.run('dropDelete', event)">
         <div class="imageicon"
@@ -38,6 +44,8 @@
 
 <script>
     const boardid = window.location.pathname.split('/')[2]
+    const userid = getCookie("userid")
+    let readonly = false;
     const state = {
         tasks: [],
         board: {}
@@ -60,20 +68,35 @@
             return state
         },
         dropDelete: (state, event) => {
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
-            const index = state.tasks.findIndex(task => task.id == id)
-            state.tasks.splice(index, 1)
+            const userid = event.dataTransfer.getData('text').split("-")[1]
             console.log("dropped", id)
-            const postRequest = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+            if (id.includes("user")) {
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }
+                fetch(`/api/board/${boardid}/removeuser/${userid}`, postRequest).then(() => { app.run('getBoard'); app.run('getTasks') })
+            } else {
+                const index = state.tasks.findIndex(task => task.id == id)
+                state.tasks.splice(index, 1)
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+                fetch(`/api/task/${id}/delete`, postRequest).then(() => app.run('getTasks'))
             }
-            fetch(`/api/task/${id}/delete`, postRequest).then(() => app.run('getTasks'))
             return state
         },
         dropToDo: (state, event) => {
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //  { { !-- const task = state.tasks.find(task => task.id == id)-- } }
             // { { !--task.state == 0 -- } }
@@ -84,10 +107,12 @@
                 },
                 body: JSON.stringify({ state: 0 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' + err));
             return state
         },
         dropInProgress: (state, event) => {
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //{ { !-- const task = state.tasks.find(task => task.id == id)-- } }
             //{ { !--task.state == 1 -- } }
@@ -98,10 +123,12 @@
                 },
                 body: JSON.stringify({ state: 1 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' + err));
             return state
         },
         dropDone: (state, event) => {
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             //   { { !-- const task = state.tasks.find(task => task.id == id)-- } }
             //   { { !--task.state == 2 -- } }
@@ -112,7 +139,21 @@
                 },
                 body: JSON.stringify({ state: 2 })
             }
-            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
+            fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' + err));
+            return state
+        },
+        dropCollab: (state, event) => {
+            if (event.preventDefault) { event.preventDefault(); }
+            if (event.stopPropagation) { event.stopPropagation(); }
+            const userid = event.dataTransfer.getData('text').split("-")[1]
+            const taskid = $(event.target).parent().parent().parent().attr('id')
+            const postRequest = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            fetch(`/api/task/${taskid}/assign/${userid}`, postRequest).then(() => app.run('getTasks'))
             return state
         }
     };
@@ -123,8 +164,12 @@
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             })
+            readonly = (state.board.users.find(user => user.id == userid)) ? false : true
             document.querySelector("#boardtitle").innerText = state.board.title
             document.querySelector("#boarddesc").innerText = state.board.desc
+            document.querySelector("#readonlybanner").style.display = (readonly) ? "flex" : "none"
+            $('.hidereadonly').each(function () { this.style.display = (readonly) ? "none" : "inline-block" })
+            $('li').each(function () { this.style.cursor = (readonly) ? "normal" : "pointer" })
             return state
         }
     }

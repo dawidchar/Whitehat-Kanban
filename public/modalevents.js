@@ -1,5 +1,7 @@
 $('#taskedit-modal').on('show.bs.modal', function (event) {
-    console.log('Triggerd')
+    if (readonly){
+        return false
+    }
     var trigger = $(event.relatedTarget)
     var taskname = trigger.find('#taskname').text()
     var modal = $(this)
@@ -9,6 +11,9 @@ $('#taskedit-modal').on('show.bs.modal', function (event) {
 })
 
 $('#boardedit-modal').on('show.bs.modal', function (event) {
+    if (readonly){
+        return false
+    }
     var boardname = $('#boardtitle').text()
     var boarddesc = $('#boarddesc').text()
     $(this).find('#title').text('Edit ' + boardname)
@@ -19,6 +24,15 @@ $('#boardedit-modal').on('show.bs.modal', function (event) {
 
 
 $('#addtask-modal').on('show.bs.modal', function (event) {
+    if (readonly){
+        return false
+    }
     var modal = $(this)
     modal.find('#taskname').val("")
+})
+
+$('#addcollab-modal').on('show.bs.modal', function (event) {
+    if (readonly){
+        return false
+    }
 })
