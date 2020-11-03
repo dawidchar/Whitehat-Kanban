@@ -1,11 +1,13 @@
-<div class="boardtitle-container text-center position-relative">
+<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+
+<div class="boardtitle-container text-center position-relative mt-2">
     <h1 id="boardtitle" style="display:inline">Board Name</h1>
     <a class="position-absolute pl-2" style="top:25%;cursor:pointer;" data-toggle="modal"
         data-target="#boardedit-modal">
         <i style="color:lightgray; font-size: 28px;" class="fas fa-edit"></i>
     </a>
 </div>
-<h5 id="boarddesc" class="text-center font-weight-light"></h5>
+<h5 id="boarddesc" class="text-center font-weight-light mt-1"></h5>
 
 {{> modal-edittask}}
 {{> modal-editboard}}
@@ -13,14 +15,14 @@
 {{> modal-addtask}}
 
 <div class="mx-auto p-5 d-flex justify-content-center flex-column text-center" style="width:95%">
-    <div class="collab-container shadow">
+    <div class="collab-container shadow pt-1">
         <h5 class="text-center font-weight-light" style="display:inline;">Collabarators</h5>&nbsp;
         <a style="color: black; cursor:pointer;" data-toggle="modal" data-target="#addcollab-modal"><i
                 class="fas fa-plus"></i></a>
         <div id="collabapp"></div>
     </div>
-    <button type="button" class="btn btn-success mb-3 mt-5 mx-auto" data-toggle="modal" data-target="#addtask-modal">
-        Add Task ✔
+    <button type="button" class="addtask-btn btn m-4 mx-auto" data-toggle="modal" data-target="#addtask-modal">
+        Add Task
     </button>
     <div class="d-flex flex-row flex-wrap justify-content-around" id="app"> </div>
     <div class="trashicon-container rounded-circle shadow p-4 mx-auto"
@@ -134,11 +136,31 @@
 </script>
 
 <style>
+    * {
+        font-family: 'Nunito', sans-serif;
+    }
+
+    #boarddesc {
+        margin-bottom: -16px;
+    }
+
+    .addtask-btn {
+        background-color: #8cc076;
+        color: #fff;
+        font-weight: 900;
+    }
+
+    .addtask-btn:hover {
+        color: #fff;
+        opacity: 0.85;
+    }
+
     .collab-container {
         width: 100%;
         height: 6rem;
         border-top-right-radius: 2rem;
         border-bottom-left-radius: 2rem;
+        margin-bottom: 8px;
     }
 
     .imageicon {
@@ -157,4 +179,24 @@
         transform: translateY(-5px) scale(1.1);
         box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
     }
+
+    #app {
+        display: grid;
+        grid-template-columns: auto;
+        gap: 1rem;
+    }
+
+    /* css for mobile goes here */
+@media screen and (min-width: 40em) {
+    /* css for mid screens goes here */
+    #app {
+        grid-template-columns: auto auto;
+    }
+}
+@media screen and (min-width: 60em) {
+    /* css for massive screens goes here */
+    #app {
+        grid-template-columns: auto auto auto;
+    }
+}
 </style>

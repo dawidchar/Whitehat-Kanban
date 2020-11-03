@@ -1,7 +1,8 @@
+<div class="mt-2 text-center"><h1>All Boards</h1></div>
 <div class="main-grid">
     ${state.boards.map(board => `
     <a href="/board/${board.id}">
-    <article style="background-image: url(${board.image});">
+    <article class="shadow" style="background-image: url(${board.image});">
         <div class="board-info"><span style="top:40%;position:relative;">${board.desc}</span></div>
         <div>
             <div>
@@ -23,3 +24,25 @@
 </div>
 <div style="visibility: hidden;">
 </div>
+
+<style>
+    article {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: none;
+        gap: 1rem;
+    }
+    /* css for mobile goes here */
+@media screen and (min-width: 40em) {
+    /* css for mid screens goes here */
+    article {
+        grid-template-columns: auto auto auto;
+    }
+}
+@media screen and (min-width: 60em) {
+    /* css for massive screens goes here */
+    article {
+        grid-template-columns: auto auto auto auto;
+    }
+}
+</style>

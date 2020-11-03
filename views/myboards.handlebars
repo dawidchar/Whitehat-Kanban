@@ -1,11 +1,17 @@
 <center>
-<h1>Your Boards</h1>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">+ Add Board</button>
+    <div class="mt-2"><h1>My Boards</h1></div>
+<button type="button" class="addboard-btn btn mt-2" data-toggle="modal" data-target="#addBoardModal">+ Add Board</button>
 </center>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
 <style>
-    body {
-    background-color: #8896AB;
+    .addboard-btn {
+        background-color: #8cc076;
+        color: #fff;
+        font-weight: 900;
+    }
+    .addboard-btn:hover {
+        color: #fff;
+        opacity: 0.85;
     }
     .imageicon {
         background-position: center;
@@ -23,23 +29,25 @@
         font-family: 'Open Sans', sans-serif;
     }
     article {
-        border: 1px black solid;
+        border-radius: 4px;
         position: relative;
         min-height: 12rem;
         min-width: 20rem;
         width: 100%;
         background-position: center;
+        opacity: 0.9;
     }
     article h2 {
         position: absolute;
         bottom: 0;
         text-align: center;
         width: 100%;
-        border-top: 1px black solid;
         margin: 0;
         padding-bottom: 0.5rem;
         padding-top: 0.5rem;
-        background: #626D58;
+        background: #8cc076;
+        color: #fff;
+        font-size: 24px;
     }
     .user-image {
         max-width: 3rem;
