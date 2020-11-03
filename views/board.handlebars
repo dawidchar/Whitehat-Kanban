@@ -142,11 +142,11 @@
             fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks')).catch(err => console.log('yikes' + err));
             return state
         },
-        dropCollab: (state, event) => {
+        dropCollab: (state, event, depth) => {
             if (event.preventDefault) { event.preventDefault(); }
             if (event.stopPropagation) { event.stopPropagation(); }
             const userid = event.dataTransfer.getData('text').split("-")[1]
-            const taskid = $(event.target).parent().parent().parent().attr('id')
+            const taskid = (depth == 2) ? $(event.target).parent().parent().parent().attr('id') : $(event.target).parent().parent().attr('id')
             const postRequest = {
                 method: 'POST',
                 headers: {
