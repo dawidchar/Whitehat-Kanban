@@ -90,7 +90,7 @@ app.get('/api/users/:userid', async (req, res) => { //Get User with ID
 })
 
 
-app.get('/api/users/:username/login', async (req, res) => { //Get User with ID
+app.get('/api/users/:username/login', async (req, res) => { //Login a User with username
     const user = await User.findOne({ where: { username: req.params.username } })
     res.cookie('userid', user.id, { maxAge: 3600000 * 24 * 2 })
     res.cookie('user-name', user.name)
@@ -102,7 +102,7 @@ app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
     const user = await User.findOne({ where: { username: req.params.username } })
     if (user) {
         console.log("USER EXISTS")
-        res.json(true)
+        res.json(user)
     } else {
         console.log('User Clean')
         res.json(false)
