@@ -1,5 +1,6 @@
 <li style="list-style-type:none; cursor:pointer;" id="{{taskid}}" draggable="true"
-    ondragstart="app.run('dragStart', event)">
+    ondragstart="app.run('dragStart', event)"
+    ondrop="app.run('dropCollab', event)">
     <a data-toggle="modal" data-target="#taskedit-modal">
         <div class="position-relative d-flex align-items-center">
             <h4 id="taskname" class="font-weight-light">{{taskname}}</h4>

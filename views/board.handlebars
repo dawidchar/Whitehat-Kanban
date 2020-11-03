@@ -59,9 +59,19 @@
         },
         dropDelete: (state, event) => {
             const id = event.dataTransfer.getData('text')
+            const userid = event.dataTransfer.getData('text').split("-")[1]
+            console.log("dropped", id)
+            if(id.includes("user")){
+            const postRequest = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            fetch(`/api/board/${boardid}/removeuser/${userid}`, postRequest).then(() => {app.run('getBoard');app.run('getTasks')})
+            } else {
             const index = state.tasks.findIndex(task => task.id == id)
             state.tasks.splice(index, 1)
-            console.log("dropped", id)
             const postRequest = {
                 method: 'POST',
                 headers: {
@@ -69,6 +79,7 @@
                 }
             }
             fetch(`/api/task/${id}/delete`, postRequest).then(() => app.run('getTasks'))
+            }
             return state
         },
         dropToDo: (state, event) => {
@@ -112,6 +123,18 @@
             }
             fetch(`/api/task/${id}`, postRequest).then(() => app.run('getTasks'))
             return state
+        },
+        dropCollab: (state, event) => {
+            const userid = event.dataTransfer.getData('text').split("-")[1]
+            const taskid = $(event.target).parent().parent().parent().attr('id')
+            const postRequest = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            fetch(`/api/task/${taskid}/assign/${userid}`, postRequest).then(() => app.run('getTasks'))
+            return state 
         }
     };
     const boardUpdate = {
