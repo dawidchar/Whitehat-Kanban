@@ -1,4 +1,5 @@
 $('#taskedit-modal').on('show.bs.modal', function (event) {
+    console.log('Triggerd')
     var trigger = $(event.relatedTarget)
     var taskname = trigger.find('#taskname').text()
     var modal = $(this)
@@ -8,5 +9,10 @@ $('#taskedit-modal').on('show.bs.modal', function (event) {
 })
 
 $('#boardedit-modal').on('show.bs.modal', function (event) {
-
+    var boardname = $('#boardtitle').text()
+    var boarddesc = $('#boarddesc').text()
+    $(this).find('#title').text('Edit ' + boardname)
+    $('#board-id').val(window.location.pathname.split('/')[2])
+    $('#board-title').val(boardname)
+    $('#board-description').val(boarddesc)
 })

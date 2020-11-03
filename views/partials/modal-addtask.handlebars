@@ -1,0 +1,34 @@
+<div class="modal fade" id="addtask-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title">Add Task</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form onsubmit="return updateTask(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Task:</label>
+                        <input name="name" type="select" class="form-control" id="collab-user"></input>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+   async function addCollab(e){
+       e.preventDefault()
+       const collabid = $('#collab-user').val().split(' ')[0]
+
+
+       return false
+   }
+</script>
