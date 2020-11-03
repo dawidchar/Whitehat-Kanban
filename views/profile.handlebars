@@ -1,0 +1,81 @@
+<center>
+<h1>Your Profile</h1>
+<div></div>
+</center>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+<style>
+    body {
+    background-color: #8896AB;
+    }
+    .user-image {
+        max-width: 8rem;
+        min-width: 8rem;
+        max-height: 8rem;
+        min-height: 8rem;
+        position: relative;
+        z-index: 100;
+        border-radius: 50%;
+        margin: 0.3rem;
+        left: 0;
+        background-position: center;
+        background-size: cover;
+    }
+    .container {
+        display: grid;
+        position: relative; /* creates absolute positioning containing block */
+        grid-template-columns: auto auto auto;
+        grid-template-rows: none;
+        gap: 1.2rem;
+    }
+</style>
+<div id="app-container">
+<div id="app" />
+</div>
+<script>
+    const userid = getCookie("userid")
+    const state = {
+        user: {},
+    };
+    const update = {
+        populate: async (state) => {
+            state.user = await fetch(`/api/users/${userid}`).then(res => res.json())
+            return state;
+        },
+        updateName: async (state) => {
+            const postRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: document.getElementById('formName').value})
+        }
+        fetch(`/api/users/${userid}`, postRequest).then(() => app.run('populate'))
+        },
+        updateImage: async (state) => {
+            const postRequest = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ avatar: document.getElementById('formImage').value})
+        }
+        fetch(`/api/users/${userid}`, postRequest).then(() => app.run('populate'))
+        }
+    }
+    const view = state => `{{> profile }}`
+    app.start("app", state, view, update)
+    app.run('populate')
+
+    document.querySelector('#formName').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+        app.run('updateName');
+        }
+    });
+
+    document.querySelector('#formImage').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+        app.run('updateImage');
+        }
+    });
+
+</script>
