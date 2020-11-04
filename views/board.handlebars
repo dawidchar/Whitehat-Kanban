@@ -75,6 +75,10 @@
             const userid = event.dataTransfer.getData('text').split("-")[1]
             console.log("dropped", id)
             if (id.includes("user")) {
+                if (Object.keys(state.board.users).length == 1){
+                    alert("Cannot Delete Last Collaborator from a Board")
+                    return state
+                }
                 const postRequest = {
                     method: 'POST',
                     headers: {
