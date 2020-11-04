@@ -125,7 +125,7 @@
 
     async function newBoard(e) {
         e.preventDefault()
-        var rawJSON = { "title": document.getElementById('formName').value, "userid": userid, "desc": document.getElementById('formDesc').value, "image": document.getElementById('formImage').value }
+        var rawJSON = { "title": document.getElementById('formName').value.replace(/  +/g, ' '), "userid": userid, "desc": document.getElementById('formDesc').value.replace(/  +/g, ' '), "image": document.getElementById('formImage').value }
         console.log(rawJSON)
         var requestOptions = {
             method: 'POST',
@@ -141,7 +141,7 @@
             .then(response => response.text())
             .then(result => {
                 console.log(result)
-                 socket.emit('update-boards')
+                socket.emit('update-boards')
                 app.run('populate');
                 $('#addBoardModal').modal('hide')
             })

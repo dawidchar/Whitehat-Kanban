@@ -3,7 +3,7 @@
     <form onsubmit="return login(event)">
         <p class="input-field">
             <i class="fas fa-user"></i>&nbsp;
-            <input id="login-username" type="text" placeholder="Username" required>
+            <input id="login-username" type="text" placeholder="Username" pattern="^(?=[a-zA-Z0-9._]{1,20}$)(?!.*[_.]{2})[^_.].*[^_.]$" required>
         </p>
         {{!-- <p class="input-field">
             <i class="fas fa-lock"></i>&nbsp;

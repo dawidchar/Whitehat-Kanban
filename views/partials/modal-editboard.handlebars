@@ -12,11 +12,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label">Title:</label>
-                        <input name="name" type="text" class="form-control" id="board-title"></input>
+                        <input name="name" type="text" class="form-control" pattern="^[a-zA-Z]*[a-zA-Z0-9]+(.|\s)*$" title="Cannot Start with a Space" id="board-title"></input>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Description:</label>
-                        <input name="description" type="text" class="form-control" id="board-description"></input>
+                        <input name="description" type="text" class="form-control" pattern="^[a-zA-Z]*[a-zA-Z0-9]+(.|\s)*$" title="Cannot Start with a Space" id="board-description"></input>
                     </div>
                 </div>
                 <div class="modal-footer">

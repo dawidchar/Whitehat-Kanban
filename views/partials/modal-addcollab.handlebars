@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="form-group postition-relative">
                         <label class="col-form-label">Username:</label>
-                        <input id="collab-user" class="form-control" type="text" placeholder="Username" required></input>
+                        <input id="collab-user" class="form-control" type="text" pattern="^(?=[a-zA-Z0-9._]{5,20}$)(?!.*[_.]{2})[^_.].*[^_.]$" title="5-20 Characters \n A-Z 9-0 _ allowed" placeholder="Username" required></input>
                     </div>
                 </div>
                 <div class="modal-footer">

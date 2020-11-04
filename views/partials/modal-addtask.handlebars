@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label">Task:</label>
-                        <input name="name" type="select" class="form-control" id="taskname" required></input>
+                        <input name="name" type="select" class="form-control" id="taskname" pattern="^[a-zA-Z]*[a-zA-Z0-9]+(.|\s)*$" title="Cannot Start with a Space" required></input>
                     </div>
                 </div>
                 <div class="modal-footer">
