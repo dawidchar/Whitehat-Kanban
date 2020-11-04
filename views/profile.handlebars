@@ -49,7 +49,7 @@
             },
             body: JSON.stringify({ name: document.getElementById('formName').value})
         }
-        fetch(`/api/users/${userid}`, postRequest).then(() => app.run('populate'))
+        fetch(`/api/users/${userid}`, postRequest).then(() => {app.run('populate');  toastr.success("Success Updating User")}).catch(error => toastr.error(error.message, "Error"))
         },
         updateImage: async (state) => {
             const postRequest = {
@@ -59,7 +59,7 @@
             },
             body: JSON.stringify({ avatar: document.getElementById('formImage').value})
         }
-        fetch(`/api/users/${userid}`, postRequest).then(() => app.run('populate'))
+        fetch(`/api/users/${userid}`, postRequest).then(() => {app.run('populate'); toastr.success("Success Updating User")}).catch(error => toastr.error(error.message, "Error"))
         }
     }
     const view = state => `{{> profile }}`

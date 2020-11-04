@@ -143,8 +143,9 @@
                 console.log(result)
                 socket.emit('update-boards')
                 app.run('populate');
+                toastr.success("Success Creating New Board")
                 $('#addBoardModal').modal('hide')
             })
-            .catch(error => console.log('error', error));
+            .catch(error => toastr.error(error.message, "Error"));
     }
 </script>

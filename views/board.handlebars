@@ -80,7 +80,8 @@
             console.log("dropped", id)
             if (id.includes("user")) {
                 if (Object.keys(state.board.users).length == 1) {
-                    alert("Cannot Delete Last Collaborator from a Board")
+                    toastr.error("Cannot Delete Last Collaborator from a Board", "Warning")
+                    //alert("Cannot Delete Last Collaborator from a Board")
                     return state
                 }
                 const postRequest = {

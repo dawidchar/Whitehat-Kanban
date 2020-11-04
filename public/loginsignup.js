@@ -3,7 +3,8 @@ async function signup(e) {
     const reqUserExists = await fetch(`/api/users/${document.querySelector("#signup-username").value.toLowerCase()}/exists`)
     const userexists = await reqUserExists.json()
     if (userexists) {
-        alert('Username Already Exists')
+        // alert('Username Already Exists')
+        toastr.error("Username Is Taken", "Error")
         return false
     }
     const userobj = {
@@ -28,9 +29,10 @@ async function login(e) {
     const reqUserExists = await fetch(`/api/users/${document.querySelector("#login-username").value.toLowerCase()}/exists`)
     const userexists = await reqUserExists.json()
     if (!userexists) {
-        alert('User Does Not Exist')
+        // alert('User Does Not Exist')
+        toastr.error("User does not exist", "Warning")
         return false
     }
-    await fetch(`/api/users/${document.querySelector("#login-username").value.toLowerCase()}/login`).then(res => { res.json().then(data => { if (data) { window.location.replace("/myboards") } else { alert("Error Logging In") } }) })
+    await fetch(`/api/users/${document.querySelector("#login-username").value.toLowerCase()}/login`).then(res => { res.json().then(data => { if (data) { window.location.replace("/myboards") } else { toastr.error("Error Logging In", "Warning") } }) })
     // window.location.replace("/myboards")
 }
