@@ -7,8 +7,8 @@
         <div>
             <div>
             ${board.users.map(user => `
-            <div class="" style="width: 3.3rem; height:3.3rem; position: absolute; right: ${state.userImageRight}px; z-index: ${state.userImageIndex}" >
-                <div class="imageicon rounded-circle shadow" style="background-image:url('${user.avatar}');"></div>
+            <div class="" style=" width: 3.3rem; height:3.3rem; position: absolute; right: ${state.userImageRight}px; z-index: ${state.userImageIndex}" >
+                <div class="imageicon rounded-circle " style="box-shadow:0 0.75rem 0.5rem rgba(0,0,0,.5); background-image:url('${user.avatar}');"></div>
             </div>
             <div class="toBeDeleted" style="visibility: hidden; width: 0; height: 0;">
             ${state.userImageRight = state.userImageRight + 20}
