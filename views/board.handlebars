@@ -1,7 +1,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 
 
-<div id="readonlybanner" class="mx-auto text-center text-white bg-info align-items-center justify-content-center flex-column"
+<div id="readonlybanner"
+    class="mx-auto text-center text-white bg-info align-items-center justify-content-center flex-column"
     style="height:2.5rem; display:none;">
     <p class="p-0 m-0 font-weight-bold">Read Only Access</p>
     <small class="p-0 font-weight-bold" style="margin-top: -0.4rem; font-size:11px">(You are not a collaborator)</small>
@@ -54,12 +55,15 @@
     const view = state => `{{> MainTasksView tasks="state.tasks"}}`;
     const collabview = state => `{{> CollabUserBar}}`
     const update = {
-        getTasks: async (state) => {
+        getTasks: async (state, voidSocketsBroadcast) => {
             state.tasks = await fetch(`/api/board/${boardid}/tasks`).then(res => res.json())
             console.log(state.tasks)
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             })
+            if (!voidSocketsBroadcast) {
+                socket.emit('update-tasks', boardid);
+            }
             return state
         },
         dragStart: (state, event) => {
@@ -75,7 +79,7 @@
             const userid = event.dataTransfer.getData('text').split("-")[1]
             console.log("dropped", id)
             if (id.includes("user")) {
-                if (Object.keys(state.board.users).length == 1){
+                if (Object.keys(state.board.users).length == 1) {
                     alert("Cannot Delete Last Collaborator from a Board")
                     return state
                 }
@@ -163,7 +167,7 @@
         }
     };
     const boardUpdate = {
-        getBoard: async (state) => {
+        getBoard: async (state, voidSocketsBroadcast) => {
             state.board = await fetch(`/api/board/${boardid}`).then(res => res.json())
             console.log(state.board.users)
             $(function () {
@@ -176,13 +180,31 @@
             $('.hidereadonly').each(function () { this.style.display = (readonly) ? "none" : "inline-block" })
             $('li').each(function () { this.style.cursor = (readonly) ? "normal" : "pointer" })
 
+            if (!voidSocketsBroadcast) {
+                socket.emit('update-board', boardid);
+            }
+
             return state
         }
     }
     app.start("app", state, view, update);
     app.start("collabapp", state, collabview, boardUpdate);
-    app.run('getTasks')
-    app.run('getBoard')
+    app.run('getTasks', true)
+    app.run('getBoard' , true)
+
+
+
+    socket.on('update-board', function (id) {
+        if (id == boardid) {
+            app.run('getBoard', true)
+        }
+    })
+
+    socket.on('update-tasks', function (id) {
+        if (id == boardid) {
+            app.run('getTasks', true)
+        }
+    })
 
 </script>
 

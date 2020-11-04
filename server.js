@@ -3,11 +3,14 @@ const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const socketIo = require('socket.io')
 const { Board, User, Task, sequelize } = require('./server/models/models.js');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const { request } = require('express');
 
+
 const app = express()
+
 
 const handlebars = expressHandlebars({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
@@ -24,6 +27,13 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
+
+
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
+
+
+
 
 app.use(function (req, res, next) {
     if (req.url == '/' || req.url.includes('api')) { //(req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) || (req.url.method == "POST" && req.url == '/api/users') 
@@ -232,16 +242,16 @@ app.post('/api/board/:id/removeuser/:userid', restrictAccess, async (req, res) =
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
-    if (Object.keys(await board.getUsers()).length == 1){
-        res.send({error:'There has to be at least 1 Collabarator'})
+    if (Object.keys(await board.getUsers()).length == 1) {
+        res.send({ error: 'There has to be at least 1 Collabarator' })
         return
     }
     let user = await User.findOne({
         where: { id: req.params.userid }
     });
     if (user && board) {
-        Task.update({UserId: null}, {
-            where: { BoardId: req.params.id, UserId: req.params.userid}
+        Task.update({ UserId: null }, {
+            where: { BoardId: req.params.id, UserId: req.params.userid }
         })
         board.removeUser(user);
         res.send(true);
@@ -385,7 +395,34 @@ async function userAccess(req, res, next) {
     }
 }
 
-app.listen(process.env.PORT, () => {
+io.on('connection', (socket) => {
+    console.log('a user connected');
+
+    socket.on('update-tasks', () => {
+        socket.broadcast.emit('update-tasks')
+    })
+
+    socket.on('update-tasks', (id) => {
+        console.log('Updating Tasks', id)
+        socket.broadcast.emit('update-tasks', id)
+    })
+
+    socket.on('update-board', (id) => {
+        console.log('Updating Board', id)
+        socket.broadcast.emit('update-board', id)
+        socket.broadcast.emit('update-boards')
+    })
+
+    socket.on('update-boards', () => {
+        socket.broadcast.emit('update-boards')
+    })
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
+
+server.listen(process.env.PORT, () => {
     sequelize.sync();
     console.log('web server running on port 3000')
 })

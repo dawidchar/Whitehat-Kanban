@@ -6,15 +6,18 @@
         width: 100%;
         height: 100%;
     }
+
     .main-grid {
         margin: 1rem;
         display: grid;
-        position: relative; /* creates absolute positioning containing block */
+        position: relative;
+        /* creates absolute positioning containing block */
         grid-template-columns: auto auto auto;
         grid-template-rows: none;
         gap: 1.2rem;
         font-family: 'Nunito', sans-serif;
     }
+
     article {
         border-radius: 4px;
         position: relative;
@@ -24,6 +27,7 @@
         background-position: center;
         opacity: 0.9;
     }
+
     article h2 {
         position: absolute;
         bottom: 0;
@@ -36,6 +40,7 @@
         color: #fff;
         font-size: 24px;
     }
+
     .user-image {
         max-width: 3rem;
         max-height: 3rem;
@@ -45,9 +50,12 @@
         margin: 0.3rem;
         right: 0;
     }
+
     a {
-        color: inherit; /* blue colors for links too */
-        text-decoration: inherit; /* no underline */
+        color: inherit;
+        /* blue colors for links too */
+        text-decoration: inherit;
+        /* no underline */
     }
 
     .board-info {
@@ -60,14 +68,14 @@
         text-align: center;
         -webkit-transition: opacity 1s;
     }
+
     .board-info:hover {
         opacity: 0.6;
         display: block;
     }
-    
 </style>
 <div id="app-container">
-<div id="app" />
+    <div id="app" />
 </div>
 <script>
 
@@ -89,5 +97,9 @@
     }
     app.start("app", state, view, update)
     app.run('populate')
+
+    socket.on('update-boards', function () {
+        app.run('populate')
+    })
 
 </script>

@@ -1,33 +1,41 @@
 <center>
-    <div class="mt-2"><h1>My Boards</h1></div>
-<button type="button" class="addboard-btn btn mt-2" data-toggle="modal" data-target="#addBoardModal">+ Add Board</button>
+    <div class="mt-2">
+        <h1>My Boards</h1>
+    </div>
+    <button type="button" class="addboard-btn btn mt-2" data-toggle="modal" data-target="#addBoardModal">+ Add
+        Board</button>
 </center>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 <style>
     .addboard-btn {
         background-color: #8cc076;
         color: #fff;
         font-weight: 900;
     }
+
     .addboard-btn:hover {
         color: #fff;
         opacity: 0.85;
     }
+
     .imageicon {
         background-position: center;
         background-size: cover;
         width: 100%;
         height: 100%;
     }
+
     .main-grid {
         margin: 1rem;
         display: grid;
-        position: relative; /* creates absolute positioning containing block */
+        position: relative;
+        /* creates absolute positioning containing block */
         grid-template-columns: auto auto auto;
         grid-template-rows: none;
         gap: 1.2rem;
         font-family: 'Open Sans', sans-serif;
     }
+
     article {
         border-radius: 4px;
         position: relative;
@@ -37,6 +45,7 @@
         background-position: center;
         opacity: 0.9;
     }
+
     article h2 {
         position: absolute;
         bottom: 0;
@@ -49,6 +58,7 @@
         color: #fff;
         font-size: 24px;
     }
+
     .user-image {
         max-width: 3rem;
         max-height: 3rem;
@@ -58,9 +68,12 @@
         margin: 0.3rem;
         right: 0;
     }
+
     a {
-        color: inherit; /* blue colors for links too */
-        text-decoration: inherit; /* no underline */
+        color: inherit;
+        /* blue colors for links too */
+        text-decoration: inherit;
+        /* no underline */
     }
 
     .board-info {
@@ -73,13 +86,14 @@
         text-align: center;
         -webkit-transition: opacity 1s;
     }
+
     .board-info:hover {
         opacity: 0.6;
         display: block;
     }
 </style>
 <div id="app-container">
-<div id="app" />
+    <div id="app" />
 </div>
 
 {{> modal-addboard }}
@@ -105,28 +119,32 @@
     app.start("app", state, view, update)
     app.run('populate')
 
+    socket.on('update-boards', function () {
+        app.run('populate')
+    })
 
     async function newBoard(e) {
         e.preventDefault()
-        var rawJSON = {"title": document.getElementById('formName').value, "userid": userid, "desc": document.getElementById('formDesc').value, "image": document.getElementById('formImage').value}
+        var rawJSON = { "title": document.getElementById('formName').value, "userid": userid, "desc": document.getElementById('formDesc').value, "image": document.getElementById('formImage').value }
         console.log(rawJSON)
         var requestOptions = {
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(rawJSON),
-        redirect: 'follow'
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(rawJSON),
+            redirect: 'follow'
         };
 
         await fetch("/api/boards", requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            console.log(result)
-            app.run('populate');
-            $('#addBoardModal').modal('hide')
-        })
-        .catch(error => console.log('error', error));
+            .then(response => response.text())
+            .then(result => {
+                console.log(result)
+                 socket.emit('update-boards')
+                app.run('populate');
+                $('#addBoardModal').modal('hide')
+            })
+            .catch(error => console.log('error', error));
     }
 </script>
