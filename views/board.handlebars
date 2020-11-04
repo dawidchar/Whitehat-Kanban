@@ -191,9 +191,25 @@
     app.start("app", state, view, update);
     app.start("collabapp", state, collabview, boardUpdate);
     app.run('getTasks', true)
-    app.run('getBoard' , true)
+    app.run('getBoard', true)
 
+    const socketuserdata = {
+        boardid : boardid,
+        name: getCookie("user-name")
+    }
+    socket.emit('update-board-user-join', socketuserdata)
 
+    socket.on('update-board-user-join', function (userdata) {
+        if (userdata.boardid == boardid) {
+            toastr.success(`${userdata.name} Joined the Board`)
+        }
+    })
+
+    socket.on('update-board-user-leave', function (userdata) {
+        if (userdata.boardid == boardid) {
+            toastr.error(`${userdata.name} Left the Board`)
+        }
+    })
 
     socket.on('update-board', function (id) {
         if (id == boardid) {

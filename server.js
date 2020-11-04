@@ -396,6 +396,7 @@ async function userAccess(req, res, next) {
 }
 
 io.on('connection', (socket) => {
+    let user_data
     console.log('a user connected');
 
     socket.on('update-tasks', () => {
@@ -417,8 +418,14 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('update-boards')
     })
 
+
+    socket.on('update-board-user-join', (userdata) => {
+        user_data = userdata
+        socket.broadcast.emit('update-board-user-join', userdata)
+    })
+
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        socket.broadcast.emit('update-board-user-leave', user_data)
     });
 });
 
