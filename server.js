@@ -237,6 +237,11 @@ app.post('/api/users/:userid', protectUser, async (req, res) => { // Update User
             res.send(true)
         }
     }
+    if (req.body.pass) {
+        const user = await User.findByPk(req.params.userid) 
+        await UserPassword.update({password:req.body.pass},{where: { id: user.UserPasswordId }})
+        res.send(true)
+    }
 })
 
 app.post('/api/users/:userid/delete', protectUser, async (req, res) => { // Delete User With That ID

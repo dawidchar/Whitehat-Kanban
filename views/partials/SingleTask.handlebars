@@ -5,8 +5,8 @@
         <div class="position-relative d-flex align-items-center" ondrop="app.run('dropCollab', event)">
             <h4 id="taskname" class="font-weight-light">{{taskname}}</h4>
             ${(task.User) ? `<div class="mb-1 mr-4 ml-auto" style="width: 1.8rem; height:1.8rem;">
-                <div class="imageicon rounded-circle shadow" style="background-image:url('{{useravatar}}');"
-                    data-toggle="tooltip" data-placement="bottom" title="{{username}}"></div>
+                <div class="imageicon rounded-circle shadow" style="z-index:100; background-image:url('{{useravatar}}');"
+                    tippy="true" title="{{username}}"></div>
             </div>` : ``}
         </div>
     </a>

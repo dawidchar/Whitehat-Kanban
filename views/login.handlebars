@@ -29,9 +29,9 @@
                 return state
             },
             '#setactive': (state, id, username) => {
-                console.log(id)
                 state.activeuserid = id
                 state.activeusername = username
+                $('#passcode-1').focus()
                 return state
             }
         }
@@ -44,7 +44,6 @@
                 tippy(this, {
                     theme: 'forest',
                     arrow: true,
-                    followCursor: 'horizontal',
                     content: this.title
                 });
             })
@@ -69,7 +68,6 @@
         }
         rendered = async state => {
             if (state.loginstate) {
-                console.log(document.getElementById('userapp'))
                 usericons_intstance.start(document.getElementById('userapp'))
                 app.run('#loadusers')
             }

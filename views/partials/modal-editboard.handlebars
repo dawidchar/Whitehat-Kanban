@@ -43,7 +43,6 @@
             body: JSON.stringify({ title: boardtitle, desc: boarddesc })
         }
         await fetch(`/api/board/${boardid}`, postRequest).then(res => {
-            console.log(res)
             app.run('getBoard')
         })
 

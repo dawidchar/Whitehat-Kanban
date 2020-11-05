@@ -52,15 +52,11 @@
         tasks: [],
         board: {}
     };
-    const view = state => `{{> MainTasksView tasks="state.tasks"}}`;
+    const view = state => `{{> MainTasksView tasks="state.tasks"}}`
     const collabview = state => `{{> CollabUserBar}}`
     const update = {
         getTasks: async (state, voidSocketsBroadcast) => {
             state.tasks = await fetch(`/api/board/${boardid}/tasks`).then(res => res.json())
-            console.log(state.tasks)
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
-            })
             if (!voidSocketsBroadcast) {
                 socket.emit('update-tasks', boardid);
             }
@@ -69,7 +65,6 @@
         dragStart: (state, event) => {
             const id = event.target.id
             event.dataTransfer.setData('text', id)
-            console.log("dragging", id)
             return state
         },
         dropDelete: (state, event) => {
@@ -77,7 +72,6 @@
             if (event.stopPropagation) { event.stopPropagation(); }
             const id = event.dataTransfer.getData('text')
             const userid = event.dataTransfer.getData('text').split("-")[1]
-            console.log("dropped", id)
             if (id.includes("user")) {
                 if (Object.keys(state.board.users).length == 1) {
                     toastr.error("Cannot Delete Last Collaborator from a Board", "Warning")
@@ -170,10 +164,6 @@
     const boardUpdate = {
         getBoard: async (state, voidSocketsBroadcast) => {
             state.board = await fetch(`/api/board/${boardid}`).then(res => res.json())
-            console.log(state.board.users)
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
-            })
             readonly = (state.board.users.find(user => user.id == userid)) ? false : true
             document.querySelector("#boardtitle").innerText = state.board.title
             document.querySelector("#boarddesc").innerText = state.board.desc
@@ -184,19 +174,31 @@
             if (!voidSocketsBroadcast) {
                 socket.emit('update-board', boardid);
             }
-
             return state
         }
     }
-    app.start("app", state, view, update);
-    app.start("collabapp", state, collabview, boardUpdate);
+    app.start("app", state, view, update, { rendered: function () { loadToolTips() } });
+    app.start("collabapp", state, collabview, boardUpdate, { rendered: function () { loadToolTips() } });
     app.run('getTasks', true)
     app.run('getBoard', true)
 
     const socketuserdata = {
-        boardid : boardid,
+        boardid: boardid,
         name: getCookie("user-name")
     }
+
+    function loadToolTips() {
+        $('[tippy="true"]').each(function () {
+            tippy(this, {
+                theme: 'forest',
+                arrow: true,
+                placement: 'bottom',
+                animation: 'perspective-extreme',
+                content: this.title
+            });
+        })
+    }
+
     socket.emit('update-board-user-join', socketuserdata)
 
     socket.on('update-board-user-join', function (userdata) {

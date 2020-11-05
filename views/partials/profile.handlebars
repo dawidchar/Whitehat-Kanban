@@ -1,18 +1,35 @@
 <div class="container">
     <div class="user-image" style="background-image: url('${state.user.avatar}');"></div>
     <div>
-    <h1>Welcome, ${state.user.name}</h1>
-    <h4>Better Known as ${state.user.username}</h4>
+        <h1>Welcome, ${state.user.name}</h1>
+        <h4>Better Known as ${state.user.username}</h4>
     </div>
     <div>
         <form>
             <div class="form-group">
                 <label for="formName">Update Name</label>
-                <input type="text" class="form-control" id="formName" pattern="^(?=[a-zA-Z0-9_]{5,20}$)(?!.*[_]{2})[^_].*[^_]$" title="5-20 Characters \n A-Z 9-0 _ allowed" required>
+                <input type="text" class="form-control" id="formName"
+                    pattern="^(?=[a-zA-Z0-9_]{5,20}$)(?!.*[_]{2})[^_].*[^_]$"
+                    title="5-20 Characters \n A-Z 9-0 _ allowed" required>
             </div>
             <div class="form-group">
                 <label for="formImage">Update Image</label>
                 <input type="url" class="form-control" id="formImage" required>
+            </div>
+            <label>Update Passcode</label>
+            <div class="d-flex mx-auto justify-content-around mb-4" style="width: 12rem;">
+                <input id="passcode-1" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                    onkeyup="passcode_back(event)" required></input>
+                <input id="passcode-2" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                    onkeyup="passcode_back(event)" required></input>
+                <input id="passcode-3" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                    onkeyup="passcode_back(event)" required></input>
+                <input id="passcode-4" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                    onkeyup="passcode_back(event)" required></input>
             </div>
             <small>Tip: Enter your new name/image then hit enter!</small>
         </form>

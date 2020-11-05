@@ -26,7 +26,6 @@
 <script>
     async function addTask(e) {
         e.preventDefault()
-        console.log('ADD TASK')
         const taskname = $('#taskname').val()
         const boardid = window.location.pathname.split('/')[2]
         const postRequest = {
@@ -37,7 +36,6 @@
             body: JSON.stringify({ name: taskname })
         }
         await fetch(`/api/board/${boardid}/tasks`, postRequest).then(() => app.run('getTasks'))
-        // console.log(`/api/board/${boardid}/tasks`, postRequest)
         $('#addtask-modal').modal('hide')
         return false
     }

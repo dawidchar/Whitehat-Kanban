@@ -1,12 +1,15 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
 <center>
-<h1>Your Profile</h1>
-<div></div>
+    <h1>Your Profile</h1>
+    <div></div>
 </center>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 <style>
     body {
-    background-color: #8896AB;
+        background-color: #8896AB;
     }
+
     .user-image {
         max-width: 8rem;
         min-width: 8rem;
@@ -20,16 +23,18 @@
         background-position: center;
         background-size: cover;
     }
+
     .container {
         display: grid;
-        position: relative; /* creates absolute positioning containing block */
+        position: relative;
+        /* creates absolute positioning containing block */
         grid-template-columns: auto auto auto;
         grid-template-rows: none;
         gap: 1.2rem;
     }
 </style>
 <div id="app-container">
-<div id="app" />
+    <div id="app" />
 </div>
 <script>
     const userid = getCookie("userid")
@@ -43,23 +48,33 @@
         },
         updateName: async (state) => {
             const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: document.getElementById('formName').value})
-        }
-        fetch(`/api/users/${userid}`, postRequest).then(() => {app.run('populate');  toastr.success("Success Updating User")}).catch(error => toastr.error(error.message, "Error"))
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: document.getElementById('formName').value })
+            }
+            fetch(`/api/users/${userid}`, postRequest).then(() => { app.run('populate'); toastr.success("Success Updating User") }).catch(error => toastr.error(error.message, "Error"))
         },
         updateImage: async (state) => {
             const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ avatar: document.getElementById('formImage').value})
-        }
-        fetch(`/api/users/${userid}`, postRequest).then(() => {app.run('populate'); toastr.success("Success Updating User")}).catch(error => toastr.error(error.message, "Error"))
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ avatar: document.getElementById('formImage').value })
+            }
+            fetch(`/api/users/${userid}`, postRequest).then(() => { app.run('populate'); toastr.success("Success Updating User") }).catch(error => toastr.error(error.message, "Error"))
+        },
+        updatePass: async (state, passhash) => {
+            const postRequest = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pass: passhash })
+            }
+            fetch(`/api/users/${userid}`, postRequest).then(() => { app.run('populate'); toastr.success("Success Updating Passcode!") }).catch(error => toastr.error(error.message, "Error"))
         }
     }
     const view = state => `{{> profile }}`
@@ -68,14 +83,50 @@
 
     document.querySelector('#formName').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
-        app.run('updateName');
+            app.run('updateName');
         }
     });
 
     document.querySelector('#formImage').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
-        app.run('updateImage');
+            app.run('updateImage');
         }
     });
 
+
+</script>
+
+<script>
+    function passcode(e) {
+        const passlocation = e.target.id.slice(-1)
+        if (e.key.match("^[0-9]")) {
+            if (passlocation < 4) {
+                $(`#passcode-${parseInt(passlocation)}`).val(e.key)
+                $(`#passcode-${parseInt(passlocation) + 1}`).focus()
+            }
+        }
+    }
+    function passcode_back(e) {
+        const passlocation = e.target.id.slice(-1)
+        if (e.key == "Backspace" || e.key == "ArrowLeft") {
+            if (passlocation > 1) {
+                $(`#passcode-${parseInt(passlocation) - 1}`).focus()
+            }
+        } else if (e.key == "ArrowRight") {
+            if (passlocation < 4) {
+                $(`#passcode-${parseInt(passlocation) + 1}`).focus()
+            }
+        } else if (e.key == "Enter") {
+            let passcode = ""
+            $('.singledigit').each(function () {
+                passcode += String(this.value)
+            })
+            if (passcode.length != 4) {
+                toastr.error("Passcode must be 4 Digits Long", "Error")
+                return
+            }
+            const passhash = CryptoJS.MD5(passcode + "s2TIib!FCuzHtz#KkctwRTzqn&Oyr@9!r&OLx7!iI$1N@&n^FnxARe%Yg%ukAt76kUvsrN8Yt09rNPg$M81zD4hxCzer70aI0UO").toString();
+            app.run('updatePass', passhash)
+        }
+    }
 </script>

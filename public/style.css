@@ -63,3 +63,13 @@ input:focus {
     width: 2.3rem;
 }
 
+
+.tippy-box[data-theme~='forest'] {
+    background: linear-gradient(90deg, #9fe597, #cce581);
+    color: #683b33;
+    font-weight: bold;
+}
+
+.tippy-box[data-theme~='forest']>.tippy-arrow {
+    color: #cce581 !important;
+}

@@ -12,7 +12,6 @@ async function signup(e) {
         passcode += String(this.value)
     })
     const passhash = CryptoJS.MD5(passcode + "s2TIib!FCuzHtz#KkctwRTzqn&Oyr@9!r&OLx7!iI$1N@&n^FnxARe%Yg%ukAt76kUvsrN8Yt09rNPg$M81zD4hxCzer70aI0UO").toString();
-    //console.log(passcode, passhash)
     const userobj = {
         name: document.querySelector("#signup-name").value,
         username: document.querySelector("#signup-username").value.toLowerCase(),
@@ -43,7 +42,6 @@ async function login(e) {
         passcode += String(this.value)
     })
     const passhash = CryptoJS.MD5(passcode + "s2TIib!FCuzHtz#KkctwRTzqn&Oyr@9!r&OLx7!iI$1N@&n^FnxARe%Yg%ukAt76kUvsrN8Yt09rNPg$M81zD4hxCzer70aI0UO").toString();
-    //console.log(passcode, passhash)
     const reqUserExists = await fetch(`/api/users/${username.toLowerCase()}/exists`)
     const userexists = await reqUserExists.json()
     if (!userexists) {
