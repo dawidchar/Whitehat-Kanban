@@ -3,10 +3,10 @@ const Handlebars = require('handlebars')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const socketIo = require('socket.io')
-const { Board, User, Task, sequelize } = require('./server/models/models.js');
+const { Board, User, Task, UserToken, UserPassword, sequelize } = require('./server/models/models.js');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const { request } = require('express');
+const crypto = require('crypto')
 
 
 const app = express()
@@ -33,17 +33,83 @@ const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 
 
+app.use(async function (req, res, next) {
+    console.log(req.path, req.method, req.params)
+    if (req.url == '/') {
+        if (req.cookies.userid && req.cookies.userToken && await verifyToken(req.cookies.userid, req.cookies.userToken)) {
+            return res.redirect("/myboards")
+        } else {
+            return next()
+        }
+    }
+    if (req.path.match("\/api\/users\/[a-z0-9_]*\/exists$") && req.method == "GET") return next()
+    if (req.path.match("\/api\/users$") && req.method == "POST") return next()
+    if (req.path.match("\/api\/users$") && req.method == "GET") return next()
+    if (req.path.match("\/api\/users\/[a-z0-9_]*\/login$") && req.method == "POST") return next()
+
+    if (!req.cookies.userid || !req.cookies.userToken) return res.redirect("/")
+    if (!await verifyToken(req.cookies.userid, req.cookies.userToken)) { res.clearCookie('userid'); res.clearCookie('userToken'); return res.redirect("/") }
+
+    next()
+})
 
 
-app.use(function (req, res, next) {
-    if (req.url == '/' || req.url.includes('api')) { //(req.url.includes('/api/users/') && (req.url.includes('/exists') || req.url.includes('/login'))) || (req.url.method == "POST" && req.url == '/api/users') 
+async function createUserToken(user, DBnew) {
+    const newToken = { token: crypto.randomBytes(32).toString('hex'), expiry: new Date(Date.now() + 3600000 * 24 * 2) }
+    if (DBnew) {
+        accessToken = await UserToken.create(newToken)
+        user.setUserToken(accessToken)
     } else {
-        if (!req.cookies.userid) {
-            res.redirect('/')
+        await UserToken.update(newToken, { where: { id: user.UserTokenId } })
+    }
+    return newToken
+}
+
+function setUserTokenCookies(res, user, accesstoken) {
+    res.cookie('userid', user.id, { maxAge: 3600000 * 24 * 2 })
+    res.cookie('userToken', accesstoken.token, { expiry: accesstoken.expiry })
+    res.cookie('user-name', user.name)
+    res.cookie('username', user.username)
+    return true
+}
+
+async function verifyToken(userid, token) {
+    const user = await User.findByPk(userid)
+    if (!user) return false
+    const userToken = await user.getUserToken()
+    return ((userToken.token == token) && (userToken.expiry > Date.now()))
+}
+
+
+function protectUser(req, res, next) {
+    if (req.params.userid) {
+        if (req.params.userid != req.cookies.userid) {
+            return res.send(false)
         }
     }
     next()
-})
+}
+
+async function protectBoard(req, res, next) {
+    if (req.params.id && req.method == 'POST') {
+        const board = await Board.findOne({
+            where: { id: req.params.id },
+            include: { model: User, as: "users" }
+        });
+        if (!board.users.find(el => el.id == req.cookies.userid)) return res.send(false)
+    }
+    next()
+}
+
+async function protectTask(req, res, next) {
+    if (req.params.taskid && req.method == 'POST') {
+        const task = await Task.findByPk(req.params.taskid)
+        const board = await task.getBoard({ include: { model: User, as: "users" } })
+        if (!board.users.find(el => el.id == req.cookies.userid)) return res.send(false)
+    }
+    next()
+}
+
 
 app.get('/', (req, res) => { //Login Page
     res.render('login', { layout: 'home' })
@@ -76,20 +142,23 @@ app.get('/api/users', async (req, res) => { //Get All Users
     res.send(users)
 })
 
-app.post('/api/users', async (req, res) => { // Create New User (Must have username and must be unique)
+app.post('/api/users', protectUser, async (req, res) => { // Create New User (Must have username and must be unique)
     if (!req.body.username) {
-        res.send({ error: 'A Username must be provided' })
-        return
+        return res.send({ error: 'A Username must be provided' })
+    }
+    if (!req.body.passcode) {
+        return res.send({ error: 'A Passcode must be provided' })
     }
     if (await User.findOne({ where: { username: req.body.username } })) {
-        res.send({ error: 'Username Taken' })
-        return
+        return res.send({ error: 'Username Taken' })
     }
     let user = {}
     try {
         user = await User.create(req.body)
-        res.cookie('userid', user.id, { maxAge: 3600000 * 24 * 2 })
-        res.cookie('user-name', user.name)
+        passobj = await UserPassword.create({ password: req.body.passcode })
+        user.setUserPassword(passobj)
+        const newToken = await createUserToken(user, true)
+        setUserTokenCookies(res, user, newToken)
     } catch (error) {
         console.log('Create User Error', error)
         res.send({ error: error })
@@ -98,32 +167,40 @@ app.post('/api/users', async (req, res) => { // Create New User (Must have usern
 })
 
 
-app.get('/api/users/:userid', userAccess, async (req, res) => { //Get User with ID
+app.get('/api/users/:userid', async (req, res) => { //Get User with ID
     const user = await User.findByPk(req.params.userid)
     res.send(user)
 })
 
 
-app.get('/api/users/:username/login', async (req, res) => { //Login a User with username
+app.post('/api/users/:username/login', protectUser, async (req, res) => { //Login a User with username
     const user = await User.findOne({ where: { username: req.params.username } })
-    res.cookie('userid', user.id, { maxAge: 3600000 * 24 * 2 })
-    res.cookie('user-name', user.name)
-    res.cookie('username', user.username)
-    res.send(user)
+    if (!req.body.pass) {
+        return res.json({ message: 'Passcode Not Provided' })
+    }
+    if (!user) {
+        return res.json({ message: 'User Does Not Exist' })
+    }
+    const user_password = await user.getUserPassword()
+    if (user_password.password === req.body.pass) {
+        const newToken = await createUserToken(user)
+        setUserTokenCookies(res, user, newToken)
+        return res.json({ success: true })
+    } else {
+        return res.json({ message: 'Inncorrect Passcode' })
+    }
 })
 
 app.get('/api/users/:username/exists', async (req, res) => { //Get User with ID
     const user = await User.findOne({ where: { username: req.params.username } })
     if (user) {
-        console.log("USER EXISTS")
         res.json(user)
     } else {
-        console.log('User Clean')
         res.json(false)
     }
 })
 
-app.get('/api/users/:userid/boards', userAccess, async (req, res) => { //Get the Boards of the User with ID
+app.get('/api/users/:userid/boards', async (req, res) => { //Get the Boards of the User with ID
     const user = await User.findOne({
         where: {
             id: req.params.userid
@@ -137,7 +214,7 @@ app.get('/api/users/:userid/boards', userAccess, async (req, res) => { //Get the
     }
 })
 
-app.post('/api/users/:userid', userAccess, async (req, res) => { // Update User with that ID
+app.post('/api/users/:userid', protectUser, async (req, res) => { // Update User with that ID
     if (req.body.name) {
         await User.update({ name: req.body.name }, {
             where: { id: req.params.userid }
@@ -162,7 +239,7 @@ app.post('/api/users/:userid', userAccess, async (req, res) => { // Update User 
     }
 })
 
-app.post('/api/users/:userid/delete', userAccess, async (req, res) => { // Delete User With That ID
+app.post('/api/users/:userid/delete', protectUser, async (req, res) => { // Delete User With That ID
     await User.destroy({
         where: { id: req.params.userid }
     })
@@ -178,7 +255,7 @@ app.get('/api/boards', async (req, res) => { //Get All Boards
     res.send(boards)
 })
 
-app.post('/api/boards', async (req, res) => { //Create New Board
+app.post('/api/boards', protectBoard, async (req, res) => { //Create New Board
     if (req.body.title && req.body.userid && req.body.image && req.body.desc) {
         const user = await User.findOne({
             where: { id: req.body.userid }
@@ -200,7 +277,7 @@ app.get('/api/board/:id', async (req, res) => { //Get Board With ID
     res.send(board)
 })
 
-app.post('/api/board/:id', restrictAccess, async (req, res) => { //Update Board with that ID
+app.post('/api/board/:id', protectBoard, async (req, res) => { //Update Board with that ID
     let result = false;
     if (req.body.title) {
         await Board.update({ title: req.body.title }, {
@@ -223,7 +300,7 @@ app.post('/api/board/:id', restrictAccess, async (req, res) => { //Update Board 
     res.send(result)
 })
 
-app.post('/api/board/:id/adduser/:userid', restrictAccess, async (req, res) => { //Update Board -- Add User
+app.post('/api/board/:id/adduser/:userid', protectBoard, async (req, res) => { //Update Board -- Add User
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
@@ -238,7 +315,7 @@ app.post('/api/board/:id/adduser/:userid', restrictAccess, async (req, res) => {
     }
 })
 
-app.post('/api/board/:id/removeuser/:userid', restrictAccess, async (req, res) => { //Update Board -- Remove User
+app.post('/api/board/:id/removeuser/:userid', protectBoard, async (req, res) => { //Update Board -- Remove User
     let board = await Board.findOne({
         where: { id: req.params.id }
     });
@@ -267,7 +344,7 @@ app.post('/api/board/:id/removeuser/:userid', restrictAccess, async (req, res) =
 //     res.send(true)
 // })
 
-app.post('/api/board/:id/delete', restrictAccess, async (req, res) => { //Delete Board With that ID
+app.post('/api/board/:id/delete', protectBoard, async (req, res) => { //Delete Board With that ID
     await Board.destroy({
         where: { id: req.params.id }
     });
@@ -284,7 +361,7 @@ app.get('/api/board/:id/tasks', async (req, res) => { // Get Tasks From the Boar
     res.send(tasks);
 })
 
-app.post('/api/board/:id/tasks', restrictAccess, async (req, res) => {// Create a New Task For the Board with that Board ID
+app.post('/api/board/:id/tasks', protectTask, async (req, res) => {// Create a New Task For the Board with that Board ID
     const task = await Task.create({ name: req.body.name, state: 0 })
     let id = req.params.id;
     let board = await Board.findOne({
@@ -316,7 +393,7 @@ app.get('/api/task/:taskid', async (req, res) => { // Get A Single Task
     res.send(task)
 })
 
-app.post('/api/task/:taskid', async (req, res) => {// Update a Specific Task with that Task ID
+app.post('/api/task/:taskid', protectTask, async (req, res) => {// Update a Specific Task with that Task ID
     let result = false;
     if (req.body.name) {
         await Task.update({ name: req.body.name }, {
@@ -333,7 +410,7 @@ app.post('/api/task/:taskid', async (req, res) => {// Update a Specific Task wit
     res.send(result)
 })
 
-app.post('/api/task/:taskid/assign/:userid', async (req, res) => {// Update the assigned User of Specific Task with that Task ID
+app.post('/api/task/:taskid/assign/:userid', protectTask, async (req, res) => {// Update the assigned User of Specific Task with that Task ID
     const task = await Task.findByPk(req.params.taskid)
     let user = await User.findOne({
         where: { id: req.params.userid }
@@ -346,7 +423,7 @@ app.post('/api/task/:taskid/assign/:userid', async (req, res) => {// Update the 
     }
 })
 
-app.post('/api/task/:taskid/unassign', async (req, res) => {// Update the task to unassign an user from it
+app.post('/api/task/:taskid/unassign', protectTask, async (req, res) => {// Update the task to unassign an user from it
     const task = await Task.findByPk(req.params.taskid)
     if (task) {
         const user = await task.getUser()
@@ -361,55 +438,26 @@ app.post('/api/task/:taskid/unassign', async (req, res) => {// Update the task t
     }
 })
 
-app.post('/api/task/:taskid/delete', async (req, res) => { // Delete Task With that Task ID
+app.post('/api/task/:taskid/delete', protectTask, async (req, res) => { // Delete Task With that Task ID
     await Task.destroy({
         where: { id: req.params.taskid }
     });
     res.send()
 })
 
-async function restrictAccess(req, res, next) {
-    let board = await Board.findOne({
-        where: { id: req.params.id },
-        include: { model: User, as: "users" }
-    });
-    var present = false;
-    for (let i = 0; i < board.users.length; i++) {
-        if (board.users[i].id == req.cookies.userid) {
-            present = true;
-        }
-    }
-    if (present) {
-        next();
-    } else {
-        console.log('Access Denied');
-        res.send(false);
-    }
-}
-
-async function userAccess(req, res, next) {
-    if (req.params.userid == req.cookies.userid) {
-        next();
-    } else {
-        res.send(false);
-    }
-}
 
 io.on('connection', (socket) => {
     let user_data
-    console.log('a user connected');
 
     socket.on('update-tasks', () => {
         socket.broadcast.emit('update-tasks')
     })
 
     socket.on('update-tasks', (id) => {
-        console.log('Updating Tasks', id)
         socket.broadcast.emit('update-tasks', id)
     })
 
     socket.on('update-board', (id) => {
-        console.log('Updating Board', id)
         socket.broadcast.emit('update-board', id)
         socket.broadcast.emit('update-boards')
     })

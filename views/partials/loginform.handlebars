@@ -1,19 +1,30 @@
 <div class="container">
     <h2 class="mb-4">Login</h2>
     <form onsubmit="return login(event)">
-        <p class="input-field">
-            <i class="fas fa-user"></i>&nbsp;
-            <input id="login-username" type="text" placeholder="Username" pattern="^(?=[a-zA-Z0-9_]{3,20}$)(?!.*[_]{2})[^_].*[^_]$" required>
+        <p class="input-field position-relative">
+            <i class="fas fa-search"></i>&nbsp;
+            <input id="login-username" style="width:90%" type="text" placeholder="Username" oninput="app.run('#searchusers')"></input>
         </p>
-        {{!-- <p class="input-field">
-            <i class="fas fa-lock"></i>&nbsp;
-            <input type="password" placeholder="Password" required>  
-        </p> --}}
+        <div id="userapp" >
+        </div>
+        <label>Passcode</label>
+        <div class="d-flex mx-auto justify-content-around mb-4" style="width: 12rem;">
+            <input id="passcode-1" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                onkeyup="passcode_back(event)" required></input>
+            <input id="passcode-2" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                onkeyup="passcode_back(event)" required></input>
+            <input id="passcode-3" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                onkeyup="passcode_back(event)" required></input>
+            <input id="passcode-4" class="singledigit form-control font-weight-bold" type="text" maxlength="1"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeypress="passcode(event)"
+                onkeyup="passcode_back(event)" required></input>
+        </div>
         <p><button class="loginbutton btn" type="submit" value="Login" />Login</button></p>
-        <p>Not registered? Sign up 
-            <a onclick="event.preventDefault();app.run('signup')" class="signup-btn" href="/">
-            here</a>!</p>
+        <p>Not registered? Sign up
+            <a onclick="event.preventDefault();app.run('#signup')" class="signup-btn" href="/">
+                here</a>!</p>
     </form>
 </div>
-
-

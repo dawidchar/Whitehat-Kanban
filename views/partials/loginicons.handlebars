@@ -1,0 +1,7 @@
+<div class="my-2 mx-1" style="width: 3.3rem; height:3.3rem;">
+    <div id="user-{{userid}}" ondragstart="app.run('dragStart', event)" class="imageicon rounded-circle shadow"
+        style="background-image:url('{{avatar}}');" tippy="true" title="{{name}}"
+        onclick="app.run('#setactive',{{userid}},'{{name}}'); $('.activeuser').removeClass('activeuser'); $('#user-{{userid}}').addClass('activeuser')"
+        username="{{username}}">
+    </div>
+</div>

@@ -8,7 +8,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -75%);
     width: 25rem;
     height: 25rem;
     text-align: center;
@@ -26,6 +26,7 @@ input {
     border: none;
     color: darkslategray;
 }
+
 .input-field, .loginbutton {
     border: 1px solid lightgray;
     border-radius: 4px;
@@ -57,3 +58,8 @@ input:focus {
     color: #8cc076;
     text-decoration: underline;
 }
+
+.singledigit {
+    width: 2.3rem;
+}
+

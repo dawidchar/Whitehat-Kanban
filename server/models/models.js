@@ -15,7 +15,6 @@ const sequelize = process.env.NODE_ENV === 'production'
     : new Sequelize(connectionSettings[process.env.NODE_ENV])
 
 
-
 class Board extends Model { }
 Board.init({
     title: DataTypes.STRING,
@@ -30,8 +29,20 @@ User.init({
         allowNull: false,
         unique: true
     },
+    passcode: DataTypes.STRING,
     name: DataTypes.STRING,
     avatar: DataTypes.STRING
+}, { sequelize })
+
+class UserPassword extends Model { }
+UserPassword.init({
+    password: DataTypes.STRING
+}, { sequelize })
+
+class UserToken extends Model { }
+UserToken.init({
+    token: DataTypes.STRING,
+    expiry: DataTypes.DATE
 }, { sequelize })
 
 class Task extends Model { }
@@ -49,4 +60,7 @@ Task.belongsTo(Board)
 User.hasMany(Task, { as: 'tasks' })
 Task.belongsTo(User)
 
-module.exports = { Board, User, Task, sequelize }
+User.belongsTo(UserPassword)
+User.belongsTo(UserToken)
+
+module.exports = { Board, User, Task, UserPassword, UserToken, sequelize }
