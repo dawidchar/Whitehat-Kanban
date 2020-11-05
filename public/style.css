@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
 
 * {
-    font-family: 'Nunito', sans-serif;
+    font-family: "Nunito", sans-serif;
     font-weight: 900;
 }
 .form {
@@ -18,7 +18,7 @@ h2 {
 }
 .container {
     background: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, .1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     padding: 36px 28px;
     border-radius: 8px;
 }
@@ -27,13 +27,14 @@ input {
     color: darkslategray;
 }
 
-.input-field, .loginbutton {
+.input-field,
+.loginbutton {
     border: 1px solid lightgray;
     border-radius: 4px;
     text-align: left;
     padding: 8px;
     color: darkgrey;
-    width: 100%; 
+    width: 100%;
 }
 input:focus {
     outline: none;
@@ -47,7 +48,8 @@ input:focus {
     filter: brightness(105%);
     color: #fff;
 }
-.signup-btn, .login-btn {
+.signup-btn,
+.login-btn {
     color: #8cc076;
 }
 .signup-btn:hover {
@@ -63,13 +65,24 @@ input:focus {
     width: 2.3rem;
 }
 
-
-.tippy-box[data-theme~='forest'] {
+.tippy-box[data-theme~="forest"] {
     background: linear-gradient(90deg, #9fe597, #cce581);
     color: #683b33;
     font-weight: bold;
 }
 
-.tippy-box[data-theme~='forest']>.tippy-arrow {
+.tippy-box[data-theme~="forest"] > .tippy-arrow {
     color: #cce581 !important;
+}
+
+.textshadow3d {
+    text-shadow: 0 1px 0 #ccc, 
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+
 }
